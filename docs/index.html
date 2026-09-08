@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Прототип — Дом за 3 дня</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#111;overflow-x:hidden;
+  font:15px/1.6 -apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%}
+h1,h2,h3{overflow-wrap:break-word}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e5e5e5}
+.top-in{max-width:1120px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:20px}
+.logo{font-weight:700;font-size:17px;letter-spacing:-.02em;white-space:nowrap}
+.logo small{display:block;font-weight:400;font-size:10.5px;color:#888;letter-spacing:0}
+.nav{display:flex;gap:18px;font-size:13.5px;color:#555;margin-left:auto;flex-wrap:wrap}
+.nav a{text-decoration:none}
+.nav a:hover{color:#111}
+.top-phone{font-weight:600;font-size:14.5px;white-space:nowrap}
+.burger{display:none;margin-left:auto;border:1px solid #ccc;background:#fff;
+  border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
+
+/* каркас страницы */
+main{max-width:1120px;margin:0 auto;padding:22px 20px 90px}
+.crumb{font-size:12.5px;color:#999;margin:0 0 14px}
+.crumb a{color:#666}
+
+/* секция-карточка */
+section{position:relative;background:#fafafa;border:1px solid #ddd;border-radius:14px;
+  padding:44px 26px 22px;margin:0 0 18px}
+.sec-label{position:absolute;top:12px;left:16px;font-size:10.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:#8a8a8a;font-weight:600}
+.note{margin:20px 0 0;padding-top:14px;border-top:1px dashed #d5d5d5;
+  font-size:12.5px;line-height:1.5;color:#7a7a7a;font-style:italic}
+
+/* типографика внутри секций */
+h1{font-size:33px;line-height:1.15;letter-spacing:-.02em;margin:0 0 12px;font-weight:700}
+h2{font-size:23px;line-height:1.22;letter-spacing:-.015em;margin:0 0 8px;font-weight:700}
+h3{font-size:15.5px;line-height:1.3;margin:0 0 5px;font-weight:700}
+.lead{font-size:16.5px;line-height:1.5;color:#444;margin:0 0 16px;max-width:60ch}
+.sub{font-size:13.5px;color:#666;margin:0 0 14px;max-width:66ch}
+p{margin:0 0 10px}
+ul{margin:8px 0 0;padding-left:19px}
+li{margin:4px 0}
+.small{font-size:12.5px;color:#777}
+
+/* заглушки — то, что ждём от клиента */
+.stub{background:#fff3c4;border-bottom:1px solid #e3c85a;padding:0 3px;
+  border-radius:3px;font-style:normal}
+
+/* кнопки */
+.btn{display:inline-block;background:#111;color:#fff;text-decoration:none;
+  border:2px solid #111;border-radius:9px;padding:12px 20px;font-size:14px;
+  font-weight:600;cursor:pointer}
+.btn.ghost{background:#fff;color:#111}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 0}
+
+/* фото-плейсхолдер */
+.ph{border:1.5px dashed #bbb;border-radius:10px;color:#8a8a8a;font-size:12.5px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:14px;min-height:150px;
+  background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#e9e9e9 7px,#e9e9e9 14px)}
+.ph.tall{min-height:260px}
+.ph.wide{min-height:190px}
+.ph.sq{min-height:120px}
+
+/* сетки */
+.g{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+
+/* карточка */
+.card{background:#fff;border:1px solid #e0e0e0;border-radius:11px;padding:15px}
+.card .num{font-size:11px;font-weight:700;color:#999;letter-spacing:.06em}
+.price{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:8px 0 0}
+.price small{display:block;font-size:11.5px;font-weight:400;color:#888;letter-spacing:0}
+
+/* кликабельная карточка → другая страница */
+.click{background:#fff;border:2px solid #111;border-radius:11px;padding:15px;
+  box-shadow:0 2px 0 #111;text-decoration:none;display:block;
+  transition:transform .12s ease,box-shadow .12s ease}
+.click:hover{transform:translateY(-3px);box-shadow:0 5px 0 #111}
+.click .badge{display:inline-block;font-size:9.5px;letter-spacing:.08em;font-weight:700;
+  text-transform:uppercase;background:#111;color:#fff;border-radius:4px;padding:3px 6px;
+  margin:0 0 8px}
+.click .go{margin:10px 0 0;font-weight:700;font-size:13.5px}
+
+/* чипсы */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.chip{background:#fff;border:1px solid #d8d8d8;border-radius:999px;
+  padding:6px 13px;font-size:12.5px;color:#444}
+.hero-geo{display:inline-block;margin:0 0 10px;padding:5px 12px 5px 10px;
+  background:#f2f2f2;border:1px solid #e0e0e0;border-radius:999px;
+  font-size:12px;color:#555;letter-spacing:.01em}
+.hero-geo::before{content:"";display:inline-block;width:6px;height:6px;
+  border-radius:50%;background:#111;margin:0 7px 1px 0;vertical-align:middle}
+
+/* таблица */
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid #e0e0e0;border-radius:10px}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #ededed;
+  white-space:nowrap}
+th{background:#f4f4f4;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:#666}
+tr:last-child td{border-bottom:0}
+
+/* шаги-процесс */
+.steps{counter-reset:s;display:grid;gap:10px}
+.step{counter-increment:s;background:#fff;border:1px solid #e0e0e0;border-radius:11px;
+  padding:14px 15px 14px 52px;position:relative}
+.step::before{content:counter(s);position:absolute;left:15px;top:13px;width:24px;height:24px;
+  background:#111;color:#fff;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:12.5px;font-weight:700}
+
+/* форма */
+.form{background:#fff;border:1px solid #e0e0e0;border-radius:11px;padding:16px;max-width:430px}
+.field{border:1px solid #d5d5d5;border-radius:8px;padding:11px 12px;font-size:13.5px;
+  color:#999;margin:0 0 9px;background:#fcfcfc}
+.consent{font-size:11.5px;color:#999;margin:9px 0 0}
+
+/* квиз */
+.quiz{background:#fff;border:2px solid #111;border-radius:12px;padding:18px}
+.qstep{border-bottom:1px dashed #ddd;padding:0 0 14px;margin:0 0 14px}
+.qstep:last-of-type{border-bottom:0;margin-bottom:0}
+.qnum{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#999;font-weight:700}
+.qq{font-weight:700;font-size:14.5px;margin:3px 0 9px}
+.opts{display:flex;gap:7px;flex-wrap:wrap}
+.opt{border:1px solid #ccc;border-radius:8px;padding:7px 12px;font-size:13px;background:#fcfcfc}
+.gift{background:#fff3c4;border:1px solid #e3c85a;border-radius:9px;padding:11px 13px;
+  font-size:13px;margin:14px 0 0}
+
+/* акценты */
+.hl{background:#fff;border-left:3px solid #111;border-radius:0 9px 9px 0;
+  padding:12px 15px;margin:14px 0 0;font-size:14px}
+.rating{display:flex;align-items:baseline;gap:9px;margin:0 0 12px}
+.rating b{font-size:30px;letter-spacing:-.02em}
+
+/* футер */
+footer{border-top:1px solid #e5e5e5;background:#fafafa}
+.foot-in{max-width:1120px;margin:0 auto;padding:26px 20px;display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;gap:22px;font-size:13px;color:#666}
+.foot-in b{color:#111;display:block;margin:0 0 7px;font-size:13px}
+.foot-in a{text-decoration:none;display:block;margin:0 0 4px}
+
+/* комментарии (из скилла) */
+.cmt-btn{position:absolute;top:8px;right:10px;background:#fff;border:1px solid #ccc;
+  border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;color:#555}
+.cmt-btn:hover{border-color:#111;color:#111}
+.cmt-form{margin:14px 0 0;background:#fff;border:1px solid #111;border-radius:10px;padding:12px}
+.cmt-form textarea{width:100%;min-height:74px;border:1px solid #d5d5d5;border-radius:7px;
+  padding:9px;font:inherit;font-size:13.5px;resize:vertical}
+.cmt-row{display:flex;align-items:center;gap:12px;margin:9px 0 0}
+.cmt-row button{background:#111;color:#fff;border:0;border-radius:7px;padding:8px 15px;
+  font-size:13px;font-weight:600;cursor:pointer}
+.cmt-x{font-size:12.5px;color:#888;cursor:pointer}
+.cmt-list{margin:12px 0 0;display:grid;gap:7px}
+.cmt-item{background:#fffbe8;border:1px solid #ecdca0;border-radius:9px;padding:9px 11px}
+.cmt-item span{font-size:11px;color:#9a8b52;display:block;margin:0 0 3px}
+.cmt-item p{margin:0;font-size:13.5px}
+.cmt-fab{position:fixed;right:16px;bottom:16px;z-index:60;background:#111;color:#fff;
+  border:0;border-radius:999px;padding:12px 18px;font-size:13.5px;font-weight:600;
+  cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+#cmt-page-panel{position:relative;background:#fafafa;border:1px dashed #ccc;
+  border-radius:14px;padding:16px;margin:0 0 18px}
+.cmt-panel-title{font-size:12.5px;color:#777;margin:0 0 8px;font-weight:600}
+
+/* планшет */
+@media(max-width:900px){
+  .split{grid-template-columns:1fr;gap:18px}
+  .g4,.g5{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  main{max-width:none}
+}
+/* телефон */
+@media(max-width:640px){
+  main{padding:14px 12px 78px}
+  section{padding:42px 14px 16px;border-radius:12px}
+  .sec-label{left:13px}
+  h1{font-size:25px;line-height:1.18}
+  h2{font-size:20px}
+  h3{font-size:15px}
+  .lead{font-size:15.5px}
+  .sub{font-size:13px}
+  .g2,.g3,.g4,.g5{grid-template-columns:1fr}
+  .split{gap:16px}
+
+  /* шапка: логотип + бургер + телефон, кнопку прячем */
+  .top-in{gap:10px;padding:10px 13px;flex-wrap:wrap}
+  .top .btn.sm{display:none}
+  .top-phone{font-size:13.5px;margin-left:auto}
+  .burger{display:block;margin-left:0}
+  .nav{display:none}
+  .nav.open{display:flex;flex-direction:column;width:100%;order:3;gap:2px;
+    padding:8px 0 0;border-top:1px solid #eee;margin-left:0}
+  .nav.open a{padding:9px 4px;border-bottom:1px solid #f0f0f0}
+
+  /* кнопки — на всю ширину, удобно тапать */
+  .btns{flex-direction:column;align-items:stretch}
+  .btns .btn{width:100%;text-align:center;padding:13px 16px}
+  .hero-geo{font-size:11.5px}
+
+  /* фото-плейсхолдеры компактнее */
+  .ph{min-height:120px;padding:12px}
+  .ph.tall{min-height:180px}
+  .ph.wide{min-height:150px}
+
+  /* формы и квиз */
+  .form{max-width:none}
+  .quiz{padding:14px}
+  .opt{font-size:12.5px}
+
+  /* карточки-ссылки категорий */
+  .click{box-shadow:0 2px 0 #111}
+  .click:hover{transform:none}
+
+  .steps{gap:8px}
+  .step{padding:13px 13px 13px 46px}
+  .step::before{left:12px}
+
+  .foot-in{grid-template-columns:1fr;gap:16px}
+  .cmt-fab{right:10px;bottom:10px;padding:10px 14px;font-size:12.5px}
+  .cmt-btn{position:static;display:block;margin:12px 0 0;width:100%}
+}
+@media(max-width:380px){
+  h1{font-size:22px}
+  .logo{font-size:15.5px}
+  .logo small{font-size:10px}
+  section{padding:40px 12px 14px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="logo">Дом за 3 дня<small>каркасные дома и бани &middot; Казань</small></div>
+    <button class="burger" onclick="document.querySelector('.nav').classList.toggle('open')">Меню</button>
+    <nav class="nav"><a href="index.html#doma">Дома и цены</a><a href="catalog.html">Каталог</a><a href="index.html#komplektacii">Комплектации</a><a href="index.html#objekty">Наши объекты</a><a href="index.html#kak">Как строим</a><a href="bani.html">Бани</a><a href="index.html#otzyvy">Отзывы</a></nav>
+    <div class="top-phone">+7 (843) 203-82-82</div>
+    <a class="btn sm" href="index.html#quiz">Рассчитать стоимость</a>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="sec-label">1 &middot; ПЕРВЫЙ ЭКРАН &MDASH; ОФФЕР</div>
+
+  <div class="split">
+    <div>
+      <p class="hero-geo">Казань и область &middot; выезд до 100 км</p>
+      <h1>Каркасные дома от 590 000 &#8381; с постройкой от 3 дней</h1>
+      <p class="lead">Назовём точную стоимость по телефону без планировки
+      и долгих расчётов. Цена фиксируется до начала строительства.</p>
+      <div class="chips"><span class="chip">12 лет на рынке</span><span class="chip">1 500+ домов построено</span><span class="chip">Фиксированная цена в договоре</span></div>
+      <div class="btns"><a class="btn" href="#quiz">Рассчитать стоимость</a><a class="btn ghost" href="#doma">Посмотреть варианты домов</a></div>
+    </div>
+    <div><div class="ph tall">Фото: реальный одноэтажный каркасный дом компании,<br>общий план с участком, дневной свет, зелень.<br><br><b>Важно:</b> не барнхаус &mdash; он выглядит дорого<br>и отпугивает основную аудиторию.</div></div>
+  </div>
+  <p class="note">Экран за три секунды отвечает: что строим, за сколько, как быстро. Цена в оффере отсекает нецелевой трафик и снимает «наверное, дорого». Подзаголовок держит один аргумент &mdash; цену сразу в разговоре, чего не делает ни один конкурент. Остальные преимущества идут ниже, по одному на блок. <b>Уточнить:</b> фото для первого экрана.</p>
+</section>
+<section>
+  <div class="sec-label">2 &middot; ПРЕИМУЩЕСТВА КОМПАНИИ</div>
+
+  <h2>Почему выбирают нас</h2>
+  <p class="sub">Всё, что важно при выборе надёжной строительной компании.</p>
+  <div class="g g3"><div class="card"><h3>Цена известна сразу</h3><div class="small">Назовите размеры дома и пожелания, и мы сразу скажем стоимость.</div></div><div class="card"><h3>Цена фиксируется</h3><div class="small">Стоимость прописывается в договоре и не меняется после согласования.</div></div><div class="card"><h3>Собственные материалы</h3><div class="small">У компании собственный магазин и склады стройматериалов.</div></div><div class="card"><h3>Свои бригады</h3><div class="small">Строим своими силами без привлечения подрядчиков.</div></div><div class="card"><h3>12 лет работы</h3><div class="small">Работаем с <span class="stub">2014</span> года и построили более 1 500 домов.</div></div><div class="card"><h3>Строим круглый год</h3><div class="small">Каркасная технология позволяет заниматься строительством в любое время года.</div></div></div>
+  <p class="note">Формулировки взяты из созвона и переупакованы на язык выгоды клиента. Блок закрывает базовое «а почему вы?» до того, как человек начнёт сравнивать. <b>Уточнить:</b> год основания компании.</p>
+</section>
+<section>
+  <div class="sec-label">3 &middot; КВИЗ &MDASH; РАСЧЁТ СТОИМОСТИ</div>
+
+  <div id="quiz"></div>
+  <h2>Узнайте цену своего дома</h2>
+  <p class="sub">Ответьте на 5 вопросов &mdash; и мы назовём цену с учётом
+  размера, назначения и фундамента. Это займёт минуту.</p>
+  <div class="quiz">
+    <div class="qstep"><div class="qnum">Шаг 1 из 5</div>
+      <div class="qq">Для чего нужен дом?</div>
+      <div class="opts"><span class="opt">Дача, сезонное проживание</span>
+      <span class="opt">Для постоянного проживания</span>
+      <span class="opt">Баня</span></div></div>
+    <div class="qstep"><div class="qnum">Шаг 2 из 5</div>
+      <div class="qq">Какой размер планируете?</div>
+      <div class="opts"><span class="opt">3&times;4</span><span class="opt">4&times;4</span>
+      <span class="opt">4&times;6</span><span class="opt">6&times;6</span>
+      <span class="opt">6&times;8</span><span class="opt">Свой размер</span></div></div>
+    <div class="qstep"><div class="qnum">Шаг 3 из 5</div>
+      <div class="qq">Этажность</div>
+      <div class="opts"><span class="opt">Одноэтажный</span>
+      <span class="opt">С мансардой</span><span class="opt">Полутораэтажный</span>
+      <span class="opt">Пока не решил</span></div></div>
+    <div class="qstep"><div class="qnum">Шаг 4 из 5</div>
+      <div class="qq">Нужен ли фундамент?</div>
+      <div class="opts"><span class="opt">Нужен</span>
+      <span class="opt">Уже есть</span><span class="opt">Не знаю, подскажите</span></div></div>
+    <div class="qstep"><div class="qnum">Шаг 5 из 5</div>
+      <div class="qq">Когда планируете строить?</div>
+      <div class="opts"><span class="opt">В этом сезоне</span>
+      <span class="opt">В следующем</span><span class="opt">Пока просто узнаю цену</span></div></div>
+    <div class="qstep"><div class="qnum">Последний шаг</div>
+      <div class="qq">Куда отправить расчёт?</div>
+      <div class="field">Ваше имя</div>
+      <div class="field">Телефон</div>
+      <a class="btn" href="#">Получить расчёт</a>
+      <div class="gift"><b>Бонус за расчёт:</b> <span class="stub">подарок / скидка — придумать вместе с клиентом. У конкурентов: дверь в подарок, окна, скидка 3%, заморозка цены на 6 месяцев</span></div>
+    </div>
+  </div>
+  <p class="note">Квиз стоит третьим блоком: по кейсам Директа он собирает больше заявок и дешевле лида, чем обычная форма. Человек отвечает по шагам и оставляет телефон вместе с параметрами дома, а не пустой номер. <b>Уточнить:</b> что даём в подарок и от чего зависит итоговая цена.</p>
+</section>
+<section>
+  <div class="sec-label">4 &middot; КАТАЛОГ ДОМОВ</div>
+
+  <div id="doma"></div>
+  <h2>Каталог домов</h2>
+  <p class="sub">Четыре типа домов, девять размеров, три комплектации.
+  У каждого проекта цена указана сразу.</p>
+  <div class="g g2"><a class="click" href="catalog.html#odno"><span class="badge">Клик &middot; каталог</span><h3>Одноэтажные</h3><div class="small">9 размеров от 3&times;4 до 6&times;9<br><span class='price'>от 590&nbsp;000&nbsp;&#8381;</span></div><div class="go">Смотреть &rarr;</div></a><a class="click" href="catalog.html#mansarda"><span class="badge">Клик &middot; каталог</span><h3>С мансардой</h3><div class="small">Спальни на втором уровне, вдвое больше площади<br><span class='price'>от 761&nbsp;000&nbsp;&#8381;</span></div><div class="go">Смотреть &rarr;</div></a><a class="click" href="catalog.html#poltora"><span class="badge">Клик &middot; каталог</span><h3>Полутораэтажные</h3><div class="small">Для круглогодичного проживания семьёй<br><span class='price'>от 857&nbsp;000&nbsp;&#8381;</span></div><div class="go">Смотреть &rarr;</div></a><a class="click" href="catalog.html#chetyre-skata"><span class="badge">Клик &middot; каталог</span><h3>С четырёхскатной кровлей</h3><div class="small">Вальмовая крыша, аккуратный вид<br><span class='price'>от 945&nbsp;000&nbsp;&#8381;</span></div><div class="go">Смотреть &rarr;</div></a></div>
+  <div class="btns"><a class="btn" href="catalog.html">Открыть каталог</a><a class="btn ghost" href="#quiz">Построить по своим размерам</a></div>
+  <p class="note">Классический каталог: на лендинге четыре категории для быстрого выбора, по клику &mdash; полный список из 36 проектов с ценами и таблицами прайса. Карточка проекта ведёт на страницу дома. <b>Нужно от клиента:</b> фото по каждому типу и подтверждение прайса 03.2026.</p>
+</section>
+<section>
+  <div class="sec-label">5 &middot; КОМПЛЕКТАЦИИ</div>
+
+  <div id="komplektacii"></div>
+  <h2>Выберите комплектацию под свой дом</h2>
+  <p class="sub">От летней дачи до тёплого дома для круглогодичного проживания.
+  Отличие комплектаций в утеплении, отделке и уровне комфорта.</p>
+  <div class="g g3"><div class="card"><h3>Оптимальная</h3><div class="small">Для летнего отдыха и выходных на даче.<br><br>Стены, пол и потолок утеплены на 100 мм. Снаружи вагонка, кровля из оцинкованного профнастила.</div><div class="price">от 590&nbsp;000&nbsp;&#8381;<small>дом 4×4 одноэтажный</small></div></div><div class="card"><h3>Стандарт</h3><div class="small">Для сезонного проживания. Теплее и потолки выше.<br><br>Пол и потолок утеплены на 150 мм, кровля &mdash; окрашенный профнастил, перегородок сколько нужно.</div><div class="price">от 639&nbsp;000&nbsp;&#8381;<small>дом 4×4 одноэтажный</small></div></div><div class="card"><h3>Зимняя дача</h3><div class="small">Тёплый дом, в котором можно жить зимой.<br><br>Стойки каркаса 40&times;150 мм, стены утеплены на 150 мм, пол и потолок &mdash; на 200 мм. Снаружи имитация бруса.</div><div class="price">от 678&nbsp;000&nbsp;&#8381;<small>дом 4×4 одноэтажный</small></div></div></div>
+  <h3 style="margin:22px 0 8px">Чем именно отличаются</h3>
+  <div class="tbl"><table><tr><th>Параметр</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td>Стойки каркаса</td><td>50&times;100 мм</td><td>50&times;100 мм</td><td>40&times;150 мм</td></tr><tr><td>Утепление стен</td><td>100 мм</td><td>100 мм</td><td>150 мм</td></tr><tr><td>Наружная отделка</td><td>вагонка 90&times;14 мм</td><td>вагонка 90&times;14 мм</td><td>имитация бруса 16&times;135 мм</td></tr><tr><td>Утепление пола</td><td>100 мм</td><td>150 мм</td><td>200 мм</td></tr><tr><td>Утепление потолка</td><td>100 мм</td><td>150 мм</td><td>200 мм</td></tr><tr><td>Высота потолка 1 этажа</td><td>от 2300 мм</td><td>от 2450 мм</td><td>от 2450 мм</td></tr><tr><td>Высота потолка 2 этажа</td><td>от 2150 мм</td><td>от 2300 мм</td><td>от 2300 мм</td></tr><tr><td>Перегородки</td><td>одна по короткой стороне</td><td>сколько нужно</td><td>сколько нужно</td></tr><tr><td>Кровля</td><td>профнастил оцинкованный</td><td>профнастил окрашенный</td><td>профнастил окрашенный</td></tr></table></div>
+  <p class="note">Состав взят с реальных сканов прайса на старом сайте &mdash; там он лежит картинками, я его расшифровал. Сравнительная таблица работает лучше трёх отдельных списков: разница видна за секунду, и человек обычно берёт средний вариант. Полный состав каждой комплектации раскроется на странице дома. <b>Уточнить:</b> что считается отдельно (доставка, терраса, септик, электрика) и по каким ценам.</p>
+</section>
+<section>
+  <div class="sec-label">6 &middot; ПОЧЕМУ ТАКАЯ ЦЕНА</div>
+
+  <h2>Почему наши дома стоят дешевле</h2>
+  <p class="sub">Мы контролируем строительство сами, закупаем материалы напрямую
+  и не переплачиваем посредникам. Поэтому можем держать доступную цену
+  без лишних наценок.</p>
+  <div class="g g2"><div class="card"><h3>Закупаем материалы напрямую</h3><div class="small">Получаем выгодные цены от поставщиков благодаря большим объёмам закупок.</div></div><div class="card"><h3>Не платим посредникам</h3><div class="small">Все основные процессы контролируем внутри компании.</div></div><div class="card"><h3>Большой объём строительства</h3><div class="small">За сезон можем построить до 20 домов, поэтому можем работать с большими объёмами материалов.</div></div><div class="card"><h3>Оптимизированная технология</h3><div class="small">Строим типовые одноэтажные и полутораэтажные дома без лишних усложнений.</div></div></div>
+  <p class="note">Такого блока почти нет у конкурентов. Он снимает недоверие «слишком дёшево, значит подвох». Текст карточек прислал клиент.</p>
+</section>
+<section>
+  <div class="sec-label">7 &middot; СРОКИ СТРОИТЕЛЬСТВА</div>
+
+  <h2>За сколько построим дом</h2>
+  <div class="tbl"><table><tr><th>Размер дома</th><th>Площадь</th><th>Срок строительства</th></tr><tr><td>3&times;4, 4&times;4</td><td>12&ndash;16 м&sup2;</td><td><b>3 дня</b></td></tr><tr><td>4&times;6, 5&times;6</td><td>24&ndash;30 м&sup2;</td><td><span class="stub">N дней</span></td></tr><tr><td>6&times;6, 6&times;8</td><td>36&ndash;48 м&sup2;</td><td><span class="stub">N дней</span></td></tr><tr><td>6&times;6 и больше с мансардой</td><td>от 54 м&sup2;</td><td><span class="stub">15–20 дней</span></td></tr></table></div>
+  <p class="small" style="margin-top:12px">Срок считается с момента завоза
+  материалов на участок. Свайный фундамент входит в комплектацию и делается
+  в эти же сроки.</p>
+  <p class="note">Срок &mdash; второй аргумент после цены сразу. Конкуренты в Москве и Питере пишут «60&ndash;70 дней», у вас маленький дом готов за три. Таблица делит по размерам, чтобы клиент не ждал трёх дней от дома 6&times;9. <b>Уточнить:</b> сроки по каждому размеру.</p>
+</section>
+<section>
+  <div class="sec-label">8 &middot; РЕАЛИЗОВАННЫЕ ОБЪЕКТЫ</div>
+
+  <div id="objekty"></div>
+  <h2>Дома, которые мы построили</h2>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото объекта 1</div><h3 style="margin-top:10px">Дом <span class="stub">6×6</span></h3><div class="small">Комплектация: <span class="stub">Стандарт</span> &middot; Срок: <span class="stub">N дней</span><br><span class="stub">Казань, N-й район</span></div><div class="price"><span class="stub">N ₽</span></div></div><div class="card"><div class="ph sq">Фото объекта 2</div><h3 style="margin-top:10px">Дом <span class="stub">6×6</span></h3><div class="small">Комплектация: <span class="stub">Стандарт</span> &middot; Срок: <span class="stub">N дней</span><br><span class="stub">Казань, N-й район</span></div><div class="price"><span class="stub">N ₽</span></div></div><div class="card"><div class="ph sq">Фото объекта 3</div><h3 style="margin-top:10px">Дом <span class="stub">6×6</span></h3><div class="small">Комплектация: <span class="stub">Стандарт</span> &middot; Срок: <span class="stub">N дней</span><br><span class="stub">Казань, N-й район</span></div><div class="price"><span class="stub">N ₽</span></div></div><div class="card"><div class="ph sq">Фото объекта 4</div><h3 style="margin-top:10px">Дом <span class="stub">6×6</span></h3><div class="small">Комплектация: <span class="stub">Стандарт</span> &middot; Срок: <span class="stub">N дней</span><br><span class="stub">Казань, N-й район</span></div><div class="price"><span class="stub">N ₽</span></div></div><div class="card"><div class="ph sq">Фото объекта 5</div><h3 style="margin-top:10px">Дом <span class="stub">6×6</span></h3><div class="small">Комплектация: <span class="stub">Стандарт</span> &middot; Срок: <span class="stub">N дней</span><br><span class="stub">Казань, N-й район</span></div><div class="price"><span class="stub">N ₽</span></div></div><div class="card"><div class="ph sq">Фото объекта 6</div><h3 style="margin-top:10px">Дом <span class="stub">6×6</span></h3><div class="small">Комплектация: <span class="stub">Стандарт</span> &middot; Срок: <span class="stub">N дней</span><br><span class="stub">Казань, N-й район</span></div><div class="price"><span class="stub">N ₽</span></div></div></div>
+  <p class="note">В стройке доверие держится на фото готовых домов. Показываем сетку объектов с размером, комплектацией, сроком и ценой. <b>Нужно от клиента:</b> фото объектов и параметры к каждому.</p>
+</section>
+<section>
+  <div class="sec-label">9 &middot; КАК ПРОХОДИТ СТРОИТЕЛЬСТВО</div>
+
+  <div id="kak"></div>
+  <h2>Как проходит строительство</h2>
+  <p class="sub">Пять понятных шагов от первого разговора до готового дома.
+  Без долгого ожидания расчёта и лишней бюрократии.</p>
+  <div class="steps"><div class="step"><h3>Заявка или звонок</h3><div class="small">Рассказываете, какой дом хотите, называете размеры и пожелания. Сразу обсуждаем стоимость и подходящую комплектацию.</div></div><div class="step"><h3>Расчёт и выбор комплектации</h3><div class="small">Подбираем комплектацию под ваши задачи и бюджет. Обсуждаем планировку, материалы и всё, что будет входить в стоимость.</div></div><div class="step"><h3>Договор и дата строительства</h3><div class="small">Фиксируем стоимость и условия в договоре. Согласовываем дату начала строительства и готовим всё необходимое.</div></div><div class="step"><h3>Строительство на участке</h3><div class="small">Доставляем материалы и собираем дом на вашем участке. Показываем ход работ, чтобы вы могли контролировать строительство.</div></div><div class="step"><h3>Приёмка и документы</h3><div class="small">Осматриваете готовый дом, подписываете акт приёмки и получаете все необходимые документы.</div></div></div>
+  <div class="hl"><b>Как платить:</b> <span class="stub">предоплата / поэтапная оплата — уточнить у клиента. У сильных конкурентов это «0% предоплаты, 70% при доставке, 30% при приёмке» — сильный аргумент, если вы можете так же</span></div>
+  <p class="note">Блок отвечает на «как всё пойдёт и когда платить». Текст шагов прислал клиент. Условия оплаты стоит усилить: сильные конкуренты выносят «без предоплаты» на первый экран. <b>Уточнить:</b> схему оплаты.</p>
+</section>
+<section>
+  <div class="sec-label">10 &middot; ГАРАНТИИ И ДОГОВОР</div>
+
+  <h2>Чем вы защищены</h2>
+  <p class="sub">В стройке вы отдаёте деньги вперёд незнакомой компании.
+  Показываем, что стоит за нашими обещаниями.</p>
+  <div class="g g3"><div class="card"><h3>Что зафиксировано в договоре</h3><div class="small">Сумма, состав работ, сроки и ответственность сторон. Договор подписываем до завоза материалов.</div></div><div class="card"><h3>Гарантия 5 лет</h3><div class="small">Прописана в договоре. Распространяется на конструктив дома: каркас, кровлю и качество работ.</div></div><div class="card"><h3>Что остаётся у вас на руках</h3><div class="small">Договор, смета, акт приёма-передачи и гарантийный талон &mdash; полный комплект документов.</div></div><div class="card"><h3>Приёмка по акту</h3><div class="small">Акт подписываем, когда у вас нет замечаний. Есть замечания &mdash; устраняем и показываем снова.</div></div><div class="card"><h3>Материал под нашей ответственностью</h3><div class="small">За сохранность материалов на участке до подписания акта отвечает компания, а не вы.</div></div><div class="card"><h3>Если возникла проблема</h3><div class="small">Свяжитесь с нами. Разберёмся в ситуации и поможем решить вопрос по гарантии.</div></div></div>
+  <p class="note">У сильных конкурентов такой блок содержит 5&ndash;6 пунктов: эскроу, штраф за просрочку, технадзор. Без него низкая цена читается как риск. Пункты не повторяют блоки про цену и преимущества &mdash; тут только то, что закреплено на бумаге. <b>Уточнить:</b> порядок действий по гарантийному случаю.</p>
+</section>
+<section>
+  <div class="sec-label">11 &middot; СО СВОЕЙ ПЛАНИРОВКОЙ</div>
+
+  <div class="split">
+    <div>
+      <h2>Проект не нужен, достаточно вашего эскиза</h2>
+      <p class="lead">Готовый проект не нужен. Покажите, каким вы хотите видеть
+      свой дом, а мы поможем подобрать планировку и подготовим её
+      к строительству.</p>
+      <ul>
+        <li>Не нужно отдельно оплачивать проектирование</li>
+        <li>Не нужно ждать готовый проект</li>
+        <li>Планировку можно обсудить с нами</li>
+        <li>Подскажем, если что-то лучше изменить</li>
+      </ul>
+      <div class="btns"><a class="btn" href="#quiz">Обсудить проект</a></div>
+    </div>
+    <div><div class="ph wide">Фото: рукописный чертёж клиента<br>рядом с готовым домом по нему.<br><br>Сильный визуал: «вот так нарисовали &mdash;<br>вот что построили».</div></div>
+  </div>
+  <p class="note">Закрывает возражение с созвона: у конкурентов «пришлите проект», и человек уходит. Вы строите по рисунку от руки, но на сайте этого нет. Блок выносит вашу особенность в аргумент.</p>
+</section>
+<section>
+  <div class="sec-label">12 &middot; ОТЗЫВЫ</div>
+
+  <div id="otzyvy"></div>
+  <h2>Что говорят клиенты</h2>
+  <div class="rating"><b><span class="stub">4,9</span></b><span class="small">средняя оценка на основе
+  <span class="stub">N</span> отзывов в Яндекс Картах и 2ГИС</span></div>
+  <div class="g g3"><div class="card"><div class="small"><span class="stub">Имя, район</span></div><p style="margin-top:9px"><span class="stub">текст отзыва — взять реальные из карт</span></p><div class="small"><span class="stub">Дом 6×6, сентябрь 2025</span></div></div><div class="card"><div class="small"><span class="stub">Имя, район</span></div><p style="margin-top:9px"><span class="stub">текст отзыва — взять реальные из карт</span></p><div class="small"><span class="stub">Дом 6×6, сентябрь 2025</span></div></div><div class="card"><div class="small"><span class="stub">Имя, район</span></div><p style="margin-top:9px"><span class="stub">текст отзыва — взять реальные из карт</span></p><div class="small"><span class="stub">Дом 6×6, сентябрь 2025</span></div></div></div>
+  <div class="btns"><a class="btn ghost" href="#">Читать отзывы в Яндекс Картах</a><a class="btn ghost" href="#">Отзывы в 2ГИС</a></div>
+  <p class="note">Отзывов много, на сайте их нет. В стройке отзывы читают перед заявкой. Берём тексты из карт и даём прямые ссылки на профили, чтобы клиент проверил. <b>Нужно от клиента:</b> ссылки на Яндекс Карты и 2ГИС.</p>
+</section>
+<section>
+  <div class="sec-label">13 &middot; БАНИ</div>
+
+  <h2>Строим и бани</h2>
+  <p class="sub">Каркасные бани под ключ по вашим размерам и пожеланиям.</p>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото бани</div><h3 style="margin-top:10px">Баня <span class="stub">3×4</span></h3><div class="small"><span class="stub">парная, мойка, комната отдыха</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани</div><h3 style="margin-top:10px">Баня <span class="stub">3×4</span></h3><div class="small"><span class="stub">парная, мойка, комната отдыха</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани</div><h3 style="margin-top:10px">Баня <span class="stub">3×4</span></h3><div class="small"><span class="stub">парная, мойка, комната отдыха</span></div><div class="price"><span class="stub">от N ₽</span></div></div></div>
+  <div class="btns"><a class="btn ghost" href="bani.html">Все бани и цены</a></div>
+  <p class="note">Три карточки, как договорились на созвоне: бани оставляем, акцент сайта на домах. Подробности &mdash; на отдельной странице.</p>
+</section>
+<section>
+  <div class="sec-label">14 &middot; ВОПРОСЫ И ОТВЕТЫ</div>
+
+  <h2>Частые вопросы</h2>
+  <div class="g g2"><div class="card"><h3>Нужен ли готовый проект дома?</h3><div class="small">Нет. Можно прийти со своим эскизом или наброском от руки. Обсудим планировку, размеры и ваши пожелания и подготовим вариант для строительства.</div></div><div class="card"><h3>Можно ли построить дом по своему проекту?</h3><div class="small">Да. Если у вас уже есть проект или собственная планировка, мы можем обсудить её и построить дом по вашим требованиям.</div></div><div class="card"><h3>Сколько стоит строительство дома?</h3><div class="small">Стоимость зависит от размеров дома, планировки и выбранной комплектации. Точную цену можно узнать уже во время первого разговора, без долгого ожидания расчёта.</div></div><div class="card"><h3>Может ли цена измениться после заключения договора?</h3><div class="small">Нет. После согласования стоимости она фиксируется в договоре. Все необходимые работы и материалы заранее учитываются в расчёте.</div></div><div class="card"><h3>Сколько времени занимает строительство?</h3><div class="small">Небольшие дачные дома можем построить от 3 дней. Более крупные дома строятся дольше в зависимости от размера и комплектации.</div></div><div class="card"><h3>Можно ли строить дом зимой?</h3><div class="small">Да. Строительство каркасных домов возможно круглый год.</div></div><div class="card"><h3>Из чего строите дома?</h3><div class="small">Мы используем собственные материалы и работаем своими бригадами. Материалы закупаем напрямую, а строительство и логистику контролируем самостоятельно.</div></div><div class="card"><h3>Подойдёт ли каркасный дом для постоянного проживания?</h3><div class="small">Да. Мы строим не только дачные дома. При выборе подходящей комплектации каркасный дом можно использовать для постоянного проживания.</div></div><div class="card"><h3>Как проходит строительство?</h3><div class="small">Сначала определяем, какой дом вам нужен, согласовываем размеры и комплектацию, рассчитываем стоимость и фиксируем её в договоре. После этого организуем доставку материалов и приступаем к строительству.</div></div><div class="card"><h3>Какую гарантию вы даёте на дом?</h3><div class="small">Гарантия прописывается в договоре. Все условия и ответственность сторон фиксируются до начала строительства.</div></div></div>
+  <p class="note">Текст FAQ клиент прислал целиком. Часть ответов перекликается с блоками выше (сроки, гарантия, из чего строим, для ПМЖ, как проходит) &mdash; это ок для FAQ, люди читают его выборочно. <b>Уточнить:</b> согласовать формулировку про гарантию (сейчас без срока).</p>
+</section>
+<section>
+  <div class="sec-label">15 &middot; ФИНАЛЬНЫЙ ПРИЗЫВ И КОНТАКТЫ</div>
+
+  <div class="split">
+    <div>
+      <h2>Постройте свой дом по понятной и фиксированной цене</h2>
+      <p class="lead">Расскажите, какой дом вы хотите. Рассчитаем стоимость
+      по вашим размерам и сразу скажем, сколько будет стоить строительство
+      без долгих расчётов и скрытых доплат.</p>
+      <div class="form"><div style="margin:0 0"><div class="field">Ваше имя</div><div class="field">Телефон</div></div><a class="btn" href="#">Рассчитать стоимость</a><p class="consent">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных</p></div>
+      <div style="margin-top:18px" class="small">
+        <b>Телефоны:</b> +7 (843) 203-82-82, +7 (843) 260-88-87<br>
+        <b>Офис:</b> <span class="stub">адрес офиса — уточнить</span><br>
+        <b>Режим работы:</b> <span class="stub">режим работы — уточнить</span><br>
+        <b>Мессенджеры:</b> <span class="stub">WhatsApp / Telegram — уточнить</span>
+      </div>
+    </div>
+    <div><div class="ph wide">Карта: расположение офиса<br>+ зона выезда 100 км вокруг Казани</div></div>
+  </div>
+  <p class="note">Форма для тех, кто дочитал, но не прошёл квиз. Два поля: имя и телефон, остальное &mdash; в разговоре. Рядом номера для тех, кто звонит сам. <b>Уточнить:</b> адрес, режим работы, мессенджеры.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-in">
+    <div>
+      <b>Дом за 3 дня</b>
+      Каркасные дома и бани<br>Казань и область, выезд до 100 км<br>
+      <span style="color:#999">12 лет на рынке &middot; 1 500+ построенных объектов</span>
+    </div>
+    <div>
+      <b>Разделы</b>
+      <a href="index.html#doma">Дома и цены</a><a href="catalog.html">Каталог</a><a href="index.html#komplektacii">Комплектации</a><a href="index.html#objekty">Наши объекты</a><a href="index.html#kak">Как строим</a><a href="bani.html">Бани</a><a href="index.html#otzyvy">Отзывы</a>
+    </div>
+    <div>
+      <b>Контакты</b>
+      +7 (843) 203-82-82<br>+7 (843) 260-88-87<br>
+      <span class="stub">адрес офиса — уточнить</span><br>
+      <span class="stub">режим работы — уточнить</span>
+    </div>
+  </div>
+</footer>
+
+<script src="comments.js"></script>
+</body>
+</html>

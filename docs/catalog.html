@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Прототип — каталог</title>
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#111;overflow-x:hidden;
+  font:15px/1.6 -apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%}
+h1,h2,h3{overflow-wrap:break-word}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e5e5e5}
+.top-in{max-width:1120px;margin:0 auto;padding:12px 20px;
+  display:flex;align-items:center;gap:20px}
+.logo{font-weight:700;font-size:17px;letter-spacing:-.02em;white-space:nowrap}
+.logo small{display:block;font-weight:400;font-size:10.5px;color:#888;letter-spacing:0}
+.nav{display:flex;gap:18px;font-size:13.5px;color:#555;margin-left:auto;flex-wrap:wrap}
+.nav a{text-decoration:none}
+.nav a:hover{color:#111}
+.top-phone{font-weight:600;font-size:14.5px;white-space:nowrap}
+.burger{display:none;margin-left:auto;border:1px solid #ccc;background:#fff;
+  border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
+
+/* каркас страницы */
+main{max-width:1120px;margin:0 auto;padding:22px 20px 90px}
+.crumb{font-size:12.5px;color:#999;margin:0 0 14px}
+.crumb a{color:#666}
+
+/* секция-карточка */
+section{position:relative;background:#fafafa;border:1px solid #ddd;border-radius:14px;
+  padding:44px 26px 22px;margin:0 0 18px}
+.sec-label{position:absolute;top:12px;left:16px;font-size:10.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:#8a8a8a;font-weight:600}
+.note{margin:20px 0 0;padding-top:14px;border-top:1px dashed #d5d5d5;
+  font-size:12.5px;line-height:1.5;color:#7a7a7a;font-style:italic}
+
+/* типографика внутри секций */
+h1{font-size:33px;line-height:1.15;letter-spacing:-.02em;margin:0 0 12px;font-weight:700}
+h2{font-size:23px;line-height:1.22;letter-spacing:-.015em;margin:0 0 8px;font-weight:700}
+h3{font-size:15.5px;line-height:1.3;margin:0 0 5px;font-weight:700}
+.lead{font-size:16.5px;line-height:1.5;color:#444;margin:0 0 16px;max-width:60ch}
+.sub{font-size:13.5px;color:#666;margin:0 0 14px;max-width:66ch}
+p{margin:0 0 10px}
+ul{margin:8px 0 0;padding-left:19px}
+li{margin:4px 0}
+.small{font-size:12.5px;color:#777}
+
+/* заглушки — то, что ждём от клиента */
+.stub{background:#fff3c4;border-bottom:1px solid #e3c85a;padding:0 3px;
+  border-radius:3px;font-style:normal}
+
+/* кнопки */
+.btn{display:inline-block;background:#111;color:#fff;text-decoration:none;
+  border:2px solid #111;border-radius:9px;padding:12px 20px;font-size:14px;
+  font-weight:600;cursor:pointer}
+.btn.ghost{background:#fff;color:#111}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 0}
+
+/* фото-плейсхолдер */
+.ph{border:1.5px dashed #bbb;border-radius:10px;color:#8a8a8a;font-size:12.5px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:14px;min-height:150px;
+  background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#e9e9e9 7px,#e9e9e9 14px)}
+.ph.tall{min-height:260px}
+.ph.wide{min-height:190px}
+.ph.sq{min-height:120px}
+
+/* сетки */
+.g{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+
+/* карточка */
+.card{background:#fff;border:1px solid #e0e0e0;border-radius:11px;padding:15px}
+.card .num{font-size:11px;font-weight:700;color:#999;letter-spacing:.06em}
+.price{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:8px 0 0}
+.price small{display:block;font-size:11.5px;font-weight:400;color:#888;letter-spacing:0}
+
+/* кликабельная карточка → другая страница */
+.click{background:#fff;border:2px solid #111;border-radius:11px;padding:15px;
+  box-shadow:0 2px 0 #111;text-decoration:none;display:block;
+  transition:transform .12s ease,box-shadow .12s ease}
+.click:hover{transform:translateY(-3px);box-shadow:0 5px 0 #111}
+.click .badge{display:inline-block;font-size:9.5px;letter-spacing:.08em;font-weight:700;
+  text-transform:uppercase;background:#111;color:#fff;border-radius:4px;padding:3px 6px;
+  margin:0 0 8px}
+.click .go{margin:10px 0 0;font-weight:700;font-size:13.5px}
+
+/* чипсы */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.chip{background:#fff;border:1px solid #d8d8d8;border-radius:999px;
+  padding:6px 13px;font-size:12.5px;color:#444}
+.hero-geo{display:inline-block;margin:0 0 10px;padding:5px 12px 5px 10px;
+  background:#f2f2f2;border:1px solid #e0e0e0;border-radius:999px;
+  font-size:12px;color:#555;letter-spacing:.01em}
+.hero-geo::before{content:"";display:inline-block;width:6px;height:6px;
+  border-radius:50%;background:#111;margin:0 7px 1px 0;vertical-align:middle}
+
+/* таблица */
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid #e0e0e0;border-radius:10px}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #ededed;
+  white-space:nowrap}
+th{background:#f4f4f4;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:#666}
+tr:last-child td{border-bottom:0}
+
+/* шаги-процесс */
+.steps{counter-reset:s;display:grid;gap:10px}
+.step{counter-increment:s;background:#fff;border:1px solid #e0e0e0;border-radius:11px;
+  padding:14px 15px 14px 52px;position:relative}
+.step::before{content:counter(s);position:absolute;left:15px;top:13px;width:24px;height:24px;
+  background:#111;color:#fff;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:12.5px;font-weight:700}
+
+/* форма */
+.form{background:#fff;border:1px solid #e0e0e0;border-radius:11px;padding:16px;max-width:430px}
+.field{border:1px solid #d5d5d5;border-radius:8px;padding:11px 12px;font-size:13.5px;
+  color:#999;margin:0 0 9px;background:#fcfcfc}
+.consent{font-size:11.5px;color:#999;margin:9px 0 0}
+
+/* квиз */
+.quiz{background:#fff;border:2px solid #111;border-radius:12px;padding:18px}
+.qstep{border-bottom:1px dashed #ddd;padding:0 0 14px;margin:0 0 14px}
+.qstep:last-of-type{border-bottom:0;margin-bottom:0}
+.qnum{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#999;font-weight:700}
+.qq{font-weight:700;font-size:14.5px;margin:3px 0 9px}
+.opts{display:flex;gap:7px;flex-wrap:wrap}
+.opt{border:1px solid #ccc;border-radius:8px;padding:7px 12px;font-size:13px;background:#fcfcfc}
+.gift{background:#fff3c4;border:1px solid #e3c85a;border-radius:9px;padding:11px 13px;
+  font-size:13px;margin:14px 0 0}
+
+/* акценты */
+.hl{background:#fff;border-left:3px solid #111;border-radius:0 9px 9px 0;
+  padding:12px 15px;margin:14px 0 0;font-size:14px}
+.rating{display:flex;align-items:baseline;gap:9px;margin:0 0 12px}
+.rating b{font-size:30px;letter-spacing:-.02em}
+
+/* футер */
+footer{border-top:1px solid #e5e5e5;background:#fafafa}
+.foot-in{max-width:1120px;margin:0 auto;padding:26px 20px;display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;gap:22px;font-size:13px;color:#666}
+.foot-in b{color:#111;display:block;margin:0 0 7px;font-size:13px}
+.foot-in a{text-decoration:none;display:block;margin:0 0 4px}
+
+/* комментарии (из скилла) */
+.cmt-btn{position:absolute;top:8px;right:10px;background:#fff;border:1px solid #ccc;
+  border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;color:#555}
+.cmt-btn:hover{border-color:#111;color:#111}
+.cmt-form{margin:14px 0 0;background:#fff;border:1px solid #111;border-radius:10px;padding:12px}
+.cmt-form textarea{width:100%;min-height:74px;border:1px solid #d5d5d5;border-radius:7px;
+  padding:9px;font:inherit;font-size:13.5px;resize:vertical}
+.cmt-row{display:flex;align-items:center;gap:12px;margin:9px 0 0}
+.cmt-row button{background:#111;color:#fff;border:0;border-radius:7px;padding:8px 15px;
+  font-size:13px;font-weight:600;cursor:pointer}
+.cmt-x{font-size:12.5px;color:#888;cursor:pointer}
+.cmt-list{margin:12px 0 0;display:grid;gap:7px}
+.cmt-item{background:#fffbe8;border:1px solid #ecdca0;border-radius:9px;padding:9px 11px}
+.cmt-item span{font-size:11px;color:#9a8b52;display:block;margin:0 0 3px}
+.cmt-item p{margin:0;font-size:13.5px}
+.cmt-fab{position:fixed;right:16px;bottom:16px;z-index:60;background:#111;color:#fff;
+  border:0;border-radius:999px;padding:12px 18px;font-size:13.5px;font-weight:600;
+  cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+#cmt-page-panel{position:relative;background:#fafafa;border:1px dashed #ccc;
+  border-radius:14px;padding:16px;margin:0 0 18px}
+.cmt-panel-title{font-size:12.5px;color:#777;margin:0 0 8px;font-weight:600}
+
+/* планшет */
+@media(max-width:900px){
+  .split{grid-template-columns:1fr;gap:18px}
+  .g4,.g5{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  main{max-width:none}
+}
+/* телефон */
+@media(max-width:640px){
+  main{padding:14px 12px 78px}
+  section{padding:42px 14px 16px;border-radius:12px}
+  .sec-label{left:13px}
+  h1{font-size:25px;line-height:1.18}
+  h2{font-size:20px}
+  h3{font-size:15px}
+  .lead{font-size:15.5px}
+  .sub{font-size:13px}
+  .g2,.g3,.g4,.g5{grid-template-columns:1fr}
+  .split{gap:16px}
+
+  /* шапка: логотип + бургер + телефон, кнопку прячем */
+  .top-in{gap:10px;padding:10px 13px;flex-wrap:wrap}
+  .top .btn.sm{display:none}
+  .top-phone{font-size:13.5px;margin-left:auto}
+  .burger{display:block;margin-left:0}
+  .nav{display:none}
+  .nav.open{display:flex;flex-direction:column;width:100%;order:3;gap:2px;
+    padding:8px 0 0;border-top:1px solid #eee;margin-left:0}
+  .nav.open a{padding:9px 4px;border-bottom:1px solid #f0f0f0}
+
+  /* кнопки — на всю ширину, удобно тапать */
+  .btns{flex-direction:column;align-items:stretch}
+  .btns .btn{width:100%;text-align:center;padding:13px 16px}
+  .hero-geo{font-size:11.5px}
+
+  /* фото-плейсхолдеры компактнее */
+  .ph{min-height:120px;padding:12px}
+  .ph.tall{min-height:180px}
+  .ph.wide{min-height:150px}
+
+  /* формы и квиз */
+  .form{max-width:none}
+  .quiz{padding:14px}
+  .opt{font-size:12.5px}
+
+  /* карточки-ссылки категорий */
+  .click{box-shadow:0 2px 0 #111}
+  .click:hover{transform:none}
+
+  .steps{gap:8px}
+  .step{padding:13px 13px 13px 46px}
+  .step::before{left:12px}
+
+  .foot-in{grid-template-columns:1fr;gap:16px}
+  .cmt-fab{right:10px;bottom:10px;padding:10px 14px;font-size:12.5px}
+  .cmt-btn{position:static;display:block;margin:12px 0 0;width:100%}
+}
+@media(max-width:380px){
+  h1{font-size:22px}
+  .logo{font-size:15.5px}
+  .logo small{font-size:10px}
+  section{padding:40px 12px 14px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="logo">Дом за 3 дня<small>каркасные дома и бани &middot; Казань</small></div>
+    <button class="burger" onclick="document.querySelector('.nav').classList.toggle('open')">Меню</button>
+    <nav class="nav"><a href="index.html#doma">Дома и цены</a><a href="catalog.html">Каталог</a><a href="index.html#komplektacii">Комплектации</a><a href="index.html#objekty">Наши объекты</a><a href="index.html#kak">Как строим</a><a href="bani.html">Бани</a><a href="index.html#otzyvy">Отзывы</a></nav>
+    <div class="top-phone">+7 (843) 203-82-82</div>
+    <a class="btn sm" href="index.html#quiz">Рассчитать стоимость</a>
+  </div>
+</header>
+
+<main>
+<p class="crumb"><a href="index.html">Главная</a> &rarr; Каталог</p><section>
+  <div class="sec-label">1 &middot; КАТАЛОГ — ШАПКА</div>
+
+  <h1>Каталог каркасных домов</h1>
+  <p class="lead">36 проектов: четыре типа домов и девять размеров, каждый &mdash;
+  в трёх комплектациях. Цена указана за каждый проект. Актуально на <span class="stub">03.2026 — подтвердить у клиента</span>.</p>
+  <div class="chips"><span class="chip">Фундамент в цене</span><span class="chip">Цена в договоре не меняется</span><span class="chip">Строим по своей планировке</span></div>
+  <div class="btns"><a class="btn" href="index.html#quiz">Рассчитать свой дом</a><a class="btn ghost" href="index.html#komplektacii">Сравнить комплектации</a></div>
+  <p class="note">Отдельная страница каталога: ловит поиск по запросам «каркасный дом Казань цена», держит все проекты и прайс в одном месте, не растягивает лендинг. Ссылка на неё &mdash; в меню и в блоке «Каталог» на главной.</p>
+</section>
+<section>
+  <div class="sec-label">2 &middot; КАТАЛОГ — ФИЛЬТР</div>
+
+  <h2>Подбор по параметрам</h2>
+  <p class="sub">Рабочий фильтр появится на этапе вёрстки. Здесь показан состав.</p>
+  <div class="card">
+    <div class="chips">
+      <span class="chip">Тип: одноэтажный / с мансардой / 1,5 этажа / 4-скатная</span>
+      <span class="chip">Размер: от 3&times;4 до 6&times;9</span>
+      <span class="chip">Площадь: 12&ndash;54 м&sup2;</span>
+      <span class="chip">Комплектация: Оптимальная / Стандарт / Зимняя дача</span>
+      <span class="chip">Цена: 590 000 &ndash; 2 335 000 &#8381;</span>
+      <span class="chip">Сортировка: дешевле / дороже / по площади</span>
+    </div>
+  </div>
+  <p class="note">Фильтр как у сильных конкурентов (Каркасник, Багров Строй). На прототипе &mdash; заглушка: клиент подтверждает набор параметров, живой фильтр делается в вёрстке.</p>
+</section>
+<section>
+  <div class="sec-label">3 &middot; КАТАЛОГ — ОДНОЭТАЖНЫЙ</div>
+
+  <div id="odno"></div>
+  <h2>Одноэтажный &mdash; от 590&nbsp;000&nbsp;&#8381;</h2>
+  <p class="sub">Девять размеров. В карточке &mdash; цена за комплектацию
+  «Оптимальная», полный расклад по трём комплектациям в таблице ниже.</p>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото: дом 4&times;4</div><h3 style="margin-top:10px">Дом 4&times;4 одноэтажный</h3><div class="small">16 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 590&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;5</div><h3 style="margin-top:10px">Дом 4&times;5 одноэтажный</h3><div class="small">20 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 692&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;5</div><h3 style="margin-top:10px">Дом 5&times;5 одноэтажный</h3><div class="small">25 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 794&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;6</div><h3 style="margin-top:10px">Дом 4&times;6 одноэтажный</h3><div class="small">24 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 763&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;6</div><h3 style="margin-top:10px">Дом 5&times;6 одноэтажный</h3><div class="small">30 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 853&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;6</div><h3 style="margin-top:10px">Дом 6&times;6 одноэтажный</h3><div class="small">36 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 969&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;7</div><h3 style="margin-top:10px">Дом 6&times;7 одноэтажный</h3><div class="small">42 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;149&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;8</div><h3 style="margin-top:10px">Дом 6&times;8 одноэтажный</h3><div class="small">48 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;161&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;9</div><h3 style="margin-top:10px">Дом 6&times;9 одноэтажный</h3><div class="small">54 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;359&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div></div>
+  <h3 style="margin:22px 0 10px">Цены по комплектациям</h3>
+  <div class="tbl"><table><tr><th>Размер</th><th>Площадь</th><th>Каркас</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td><b>4&times;4</b> м</td><td>16 м&sup2;</td><td>324&nbsp;000&nbsp;&#8381;</td><td>590&nbsp;000&nbsp;&#8381;</td><td>639&nbsp;000&nbsp;&#8381;</td><td>678&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;5</b> м</td><td>20 м&sup2;</td><td>378&nbsp;000&nbsp;&#8381;</td><td>692&nbsp;000&nbsp;&#8381;</td><td>749&nbsp;000&nbsp;&#8381;</td><td>796&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;5</b> м</td><td>25 м&sup2;</td><td>448&nbsp;000&nbsp;&#8381;</td><td>794&nbsp;000&nbsp;&#8381;</td><td>861&nbsp;000&nbsp;&#8381;</td><td>918&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;6</b> м</td><td>24 м&sup2;</td><td>434&nbsp;000&nbsp;&#8381;</td><td>763&nbsp;000&nbsp;&#8381;</td><td>826&nbsp;000&nbsp;&#8381;</td><td>876&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;6</b> м</td><td>30 м&sup2;</td><td>502&nbsp;000&nbsp;&#8381;</td><td>853&nbsp;000&nbsp;&#8381;</td><td>924&nbsp;000&nbsp;&#8381;</td><td>965&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;6</b> м</td><td>36 м&sup2;</td><td>592&nbsp;000&nbsp;&#8381;</td><td>969&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;048&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;114&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;7</b> м</td><td>42 м&sup2;</td><td>683&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;149&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;243&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;316&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;8</b> м</td><td>48 м&sup2;</td><td>759&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;161&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;365&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;443&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;9</b> м</td><td>54 м&sup2;</td><td>823&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;359&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;470&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;553&nbsp;000&nbsp;&#8381;</td></tr></table></div>
+  <p class="note">Данные со скана прайса клиента 03.2026. «Каркас» &mdash; коробка без утепления и отделки; три следующие колонки &mdash; дом под ключ. <b>Нужно:</b> фото домов этого типа.</p>
+</section>
+<section>
+  <div class="sec-label">4 &middot; КАТАЛОГ — С ДВУХСКАТНОЙ МАНСАРДОЙ</div>
+
+  <div id="mansarda"></div>
+  <h2>С двухскатной мансардой &mdash; от 761&nbsp;000&nbsp;&#8381;</h2>
+  <p class="sub">Девять размеров. В карточке &mdash; цена за комплектацию
+  «Оптимальная», полный расклад по трём комплектациям в таблице ниже.</p>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото: дом 4&times;4</div><h3 style="margin-top:10px">Дом 4&times;4 с мансардой</h3><div class="small">16 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 761&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;5</div><h3 style="margin-top:10px">Дом 4&times;5 с мансардой</h3><div class="small">20 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 921&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;5</div><h3 style="margin-top:10px">Дом 5&times;5 с мансардой</h3><div class="small">25 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;083&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;6</div><h3 style="margin-top:10px">Дом 4&times;6 с мансардой</h3><div class="small">24 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;026&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;6</div><h3 style="margin-top:10px">Дом 5&times;6 с мансардой</h3><div class="small">30 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;175&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;6</div><h3 style="margin-top:10px">Дом 6&times;6 с мансардой</h3><div class="small">36 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;344&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;7</div><h3 style="margin-top:10px">Дом 6&times;7 с мансардой</h3><div class="small">42 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;546&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;8</div><h3 style="margin-top:10px">Дом 6&times;8 с мансардой</h3><div class="small">48 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;687&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;9</div><h3 style="margin-top:10px">Дом 6&times;9 с мансардой</h3><div class="small">54 м&sup2; &middot; 1 этаж + мансарда &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;834&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div></div>
+  <h3 style="margin:22px 0 10px">Цены по комплектациям</h3>
+  <div class="tbl"><table><tr><th>Размер</th><th>Площадь</th><th>Каркас</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td><b>4&times;4</b> м</td><td>16 м&sup2;</td><td>413&nbsp;000&nbsp;&#8381;</td><td>761&nbsp;000&nbsp;&#8381;</td><td>826&nbsp;000&nbsp;&#8381;</td><td>881&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;5</b> м</td><td>20 м&sup2;</td><td>498&nbsp;000&nbsp;&#8381;</td><td>921&nbsp;000&nbsp;&#8381;</td><td>997&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;057&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;5</b> м</td><td>25 м&sup2;</td><td>591&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;083&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;172&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;237&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;6</b> м</td><td>24 м&sup2;</td><td>567&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;026&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;110&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;175&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;6</b> м</td><td>30 м&sup2;</td><td>663&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;175&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;274&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;345&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;6</b> м</td><td>36 м&sup2;</td><td>762&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;344&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;454&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;535&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;7</b> м</td><td>42 м&sup2;</td><td>879&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;546&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;672&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;777&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;8</b> м</td><td>48 м&sup2;</td><td>971&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;687&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;825&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;948&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;9</b> м</td><td>54 м&sup2;</td><td>1&nbsp;058&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;834&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;982&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;134&nbsp;000&nbsp;&#8381;</td></tr></table></div>
+  <p class="note">Данные со скана прайса клиента 03.2026. «Каркас» &mdash; коробка без утепления и отделки; три следующие колонки &mdash; дом под ключ. <b>Нужно:</b> фото домов этого типа.</p>
+</section>
+<section>
+  <div class="sec-label">5 &middot; КАТАЛОГ — ПОЛУТОРАЭТАЖНЫЙ</div>
+
+  <div id="poltora"></div>
+  <h2>Полутораэтажный &mdash; от 857&nbsp;000&nbsp;&#8381;</h2>
+  <p class="sub">Девять размеров. В карточке &mdash; цена за комплектацию
+  «Оптимальная», полный расклад по трём комплектациям в таблице ниже.</p>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото: дом 4&times;4</div><h3 style="margin-top:10px">Дом 4&times;4 полутораэтажный</h3><div class="small">16 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 857&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;5</div><h3 style="margin-top:10px">Дом 4&times;5 полутораэтажный</h3><div class="small">20 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;021&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;5</div><h3 style="margin-top:10px">Дом 5&times;5 полутораэтажный</h3><div class="small">25 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;178&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;6</div><h3 style="margin-top:10px">Дом 4&times;6 полутораэтажный</h3><div class="small">24 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;118&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;6</div><h3 style="margin-top:10px">Дом 5&times;6 полутораэтажный</h3><div class="small">30 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;281&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;6</div><h3 style="margin-top:10px">Дом 6&times;6 полутораэтажный</h3><div class="small">36 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;469&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;7</div><h3 style="margin-top:10px">Дом 6&times;7 полутораэтажный</h3><div class="small">42 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;675&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;8</div><h3 style="margin-top:10px">Дом 6&times;8 полутораэтажный</h3><div class="small">48 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;821&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;9</div><h3 style="margin-top:10px">Дом 6&times;9 полутораэтажный</h3><div class="small">54 м&sup2; &middot; 1,5 этажа &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;994&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div></div>
+  <h3 style="margin:22px 0 10px">Цены по комплектациям</h3>
+  <div class="tbl"><table><tr><th>Размер</th><th>Площадь</th><th>Каркас</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td><b>4&times;4</b> м</td><td>16 м&sup2;</td><td>426&nbsp;000&nbsp;&#8381;</td><td>857&nbsp;000&nbsp;&#8381;</td><td>928&nbsp;000&nbsp;&#8381;</td><td>988&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;5</b> м</td><td>20 м&sup2;</td><td>500&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;021&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;107&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;176&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;5</b> м</td><td>25 м&sup2;</td><td>593&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;178&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;274&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;345&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;6</b> м</td><td>24 м&sup2;</td><td>562&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;118&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;209&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;279&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;6</b> м</td><td>30 м&sup2;</td><td>663&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;281&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;386&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;485&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;6</b> м</td><td>36 м&sup2;</td><td>780&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;469&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;593&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;699&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;7</b> м</td><td>42 м&sup2;</td><td>890&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;675&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;813&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;936&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;8</b> м</td><td>48 м&sup2;</td><td>986&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;821&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;969&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;121&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;9</b> м</td><td>54 м&sup2;</td><td>1&nbsp;060&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;994&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;157&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;320&nbsp;000&nbsp;&#8381;</td></tr></table></div>
+  <p class="note">Данные со скана прайса клиента 03.2026. «Каркас» &mdash; коробка без утепления и отделки; три следующие колонки &mdash; дом под ключ. <b>Нужно:</b> фото домов этого типа.</p>
+</section>
+<section>
+  <div class="sec-label">6 &middot; КАТАЛОГ — С ЧЕТЫРЁХСКАТНОЙ КРОВЛЕЙ</div>
+
+  <div id="chetyre-skata"></div>
+  <h2>С четырёхскатной кровлей &mdash; от 945&nbsp;000&nbsp;&#8381;</h2>
+  <p class="sub">Девять размеров. В карточке &mdash; цена за комплектацию
+  «Оптимальная», полный расклад по трём комплектациям в таблице ниже.</p>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото: дом 4&times;4</div><h3 style="margin-top:10px">Дом 4&times;4 с 4-скатной кровлей</h3><div class="small">16 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 945&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;5</div><h3 style="margin-top:10px">Дом 4&times;5 с 4-скатной кровлей</h3><div class="small">20 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 999&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;5</div><h3 style="margin-top:10px">Дом 5&times;5 с 4-скатной кровлей</h3><div class="small">25 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;245&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 4&times;6</div><h3 style="margin-top:10px">Дом 4&times;6 с 4-скатной кровлей</h3><div class="small">24 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;212&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 5&times;6</div><h3 style="margin-top:10px">Дом 5&times;6 с 4-скатной кровлей</h3><div class="small">30 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;355&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;6</div><h3 style="margin-top:10px">Дом 6&times;6 с 4-скатной кровлей</h3><div class="small">36 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;538&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;7</div><h3 style="margin-top:10px">Дом 6&times;7 с 4-скатной кровлей</h3><div class="small">42 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;765&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;8</div><h3 style="margin-top:10px">Дом 6&times;8 с 4-скатной кровлей</h3><div class="small">48 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 1&nbsp;937&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div><div class="card"><div class="ph sq">Фото: дом 6&times;9</div><h3 style="margin-top:10px">Дом 6&times;9 с 4-скатной кровлей</h3><div class="small">54 м&sup2; &middot; 1 этаж &middot; срок <span class="stub">N дней</span></div><div class="price">от 2&nbsp;101&nbsp;000&nbsp;&#8381;<small>под ключ, «Оптимальная»</small></div><div class="btns"><a class="btn sm" href="dom.html">Подробнее</a></div></div></div>
+  <h3 style="margin:22px 0 10px">Цены по комплектациям</h3>
+  <div class="tbl"><table><tr><th>Размер</th><th>Площадь</th><th>Каркас</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td><b>4&times;4</b> м</td><td>16 м&sup2;</td><td>499&nbsp;000&nbsp;&#8381;</td><td>945&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;019&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;075&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;5</b> м</td><td>20 м&sup2;</td><td>567&nbsp;000&nbsp;&#8381;</td><td>999&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;186&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;258&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;5</b> м</td><td>25 м&sup2;</td><td>640&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;245&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;347&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;425&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>4&times;6</b> м</td><td>24 м&sup2;</td><td>648&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;212&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;314&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;386&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>5&times;6</b> м</td><td>30 м&sup2;</td><td>717&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;355&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;468&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;571&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;6</b> м</td><td>36 м&sup2;</td><td>823&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;538&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;665&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;775&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;7</b> м</td><td>42 м&sup2;</td><td>944&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;765&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;907&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;035&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;8</b> м</td><td>48 м&sup2;</td><td>1&nbsp;042&nbsp;000&nbsp;&#8381;</td><td>1&nbsp;937&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;096&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;266&nbsp;000&nbsp;&#8381;</td></tr><tr><td><b>6&times;9</b> м</td><td>54 м&sup2;</td><td>1&nbsp;133&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;101&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;275&nbsp;000&nbsp;&#8381;</td><td>2&nbsp;335&nbsp;000&nbsp;&#8381;</td></tr></table></div>
+  <p class="note">Данные со скана прайса клиента 03.2026. «Каркас» &mdash; коробка без утепления и отделки; три следующие колонки &mdash; дом под ключ. <b>Нужно:</b> фото домов этого типа.</p>
+</section>
+<section>
+  <div class="sec-label">7 &middot; КАТАЛОГ — ЧТО НЕ ВХОДИТ В ЦЕНУ</div>
+
+  <h2>Что считается отдельно</h2>
+  <p class="sub">Это называют сразу вместе с ценой дома, а не по ходу стройки.</p>
+  <div class="g g2"><div class="card"><h3>Доставка</h3><div class="small"><span class="stub">цена за км сверх N км — уточнить</span></div></div><div class="card"><h3>Терраса, веранда, крыльцо</h3><div class="small"><span class="stub">цены — уточнить</span></div></div><div class="card"><h3>Септик и водоснабжение</h3><div class="small"><span class="stub">делаете или нет, цены — уточнить</span></div></div><div class="card"><h3>Электрика и отопление</h3><div class="small"><span class="stub">делаете или нет, цены — уточнить</span></div></div></div>
+  <div class="hl">Фундамент (буронабивные сваи 2200&times;200&times;200 мм)
+  <b>входит</b> в цену всех трёх комплектаций.</div>
+  <p class="note">Список «что сверху» работает на аргумент про цену сразу: вы называете полную сумму, а не заманиваете низкой. <b>Нужно от клиента:</b> перечень допуслуг и цены.</p>
+</section>
+<section>
+  <div class="sec-label">8 &middot; КАТАЛОГ — СВОЙ ПРОЕКТ</div>
+
+  <div class="split">
+    <div>
+      <h2>Нужен дом по своим размерам или планировке?</h2>
+      <p class="lead">Пришлите свой эскиз или расскажите, какой дом хотите.
+      Обсудим ваши пожелания и сразу рассчитаем стоимость строительства.</p>
+      <div class="btns"><a class="btn" href="index.html#quiz">Прислать чертёж</a></div>
+    </div>
+    <div><div class="form"><h3>Заявка на расчёт</h3><div style="margin:11px 0 0"><div class="field">Ваше имя</div><div class="field">Телефон</div></div><a class="btn" href="#">Узнать цену</a><p class="consent">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных</p></div></div>
+  </div>
+  <p class="note">Замыкающая точка захвата каталога: человек, который просмотрел проекты и не нашёл свой размер, всё равно оставляет заявку.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-in">
+    <div>
+      <b>Дом за 3 дня</b>
+      Каркасные дома и бани<br>Казань и область, выезд до 100 км<br>
+      <span style="color:#999">12 лет на рынке &middot; 1 500+ построенных объектов</span>
+    </div>
+    <div>
+      <b>Разделы</b>
+      <a href="index.html#doma">Дома и цены</a><a href="catalog.html">Каталог</a><a href="index.html#komplektacii">Комплектации</a><a href="index.html#objekty">Наши объекты</a><a href="index.html#kak">Как строим</a><a href="bani.html">Бани</a><a href="index.html#otzyvy">Отзывы</a>
+    </div>
+    <div>
+      <b>Контакты</b>
+      +7 (843) 203-82-82<br>+7 (843) 260-88-87<br>
+      <span class="stub">адрес офиса — уточнить</span><br>
+      <span class="stub">режим работы — уточнить</span>
+    </div>
+  </div>
+</footer>
+
+<script src="comments.js"></script>
+</body>
+</html>
