@@ -14,8 +14,8 @@ except Exception:
 # режим pages: то же, но в docs/ и без PHP — комментарии в localStorage
 # (запасная площадка на GitHub Pages, пока хостинг под фильтром).
 CLIENT = "client" in sys.argv or "pages" in sys.argv
-PAGES = "pages" in sys.argv
-OUT = "docs" if (PAGES or not CLIENT) else "client"
+PAGES_MODE = "pages" in sys.argv
+OUT = "docs" if (PAGES_MODE or not CLIENT) else "client"
 
 # ── ТИПОГРАФ: неразрывные пробелы после предлогов/союзов, в числах, инициалах
 _PREP = (r"в|во|на|над|под|перед|при|про|за|из|изо|из-за|из-под|с|со|к|ко|у|о|"
@@ -1592,7 +1592,7 @@ def check_repeats(html, page):
 if __name__ == "__main__":
     if not os.path.isdir(OUT):
         os.makedirs(OUT)
-    if PAGES:
+    if PAGES_MODE:
         shutil.copy("client_comments.js", os.path.join(OUT, "comments.js"))
         open(os.path.join(OUT, ".nojekyll"), "w").close()
         for junk in ("comments.php", "comments.json"):

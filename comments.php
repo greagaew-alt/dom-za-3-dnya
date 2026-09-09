@@ -48,6 +48,30 @@ if (!is_array($in)) {
 
 $data = loadc($FILE);
 $action = g($in, 'action', 'add');
+
+if ($action === 'delete') {
+    $id = g($in, 'id', '');
+    $kept = array();
+    foreach ($data as $c) {
+        if (g($c, 'id', '') !== $id) $kept[] = $c;
+    }
+    $data = $kept;
+    echo storec($FILE, $data) ? '{"ok":true}' : '{"error":"save failed"}';
+    exit;
+}
+
+if ($action === 'reply_delete') {
+    $id = g($in, 'id', '');
+    $ri = intval(g($in, 'ri', -1));
+    foreach ($data as $i => $c) {
+        if (g($c, 'id', '') === $id && isset($data[$i]['replies'][$ri])) {
+            array_splice($data[$i]['replies'], $ri, 1);
+        }
+    }
+    echo storec($FILE, $data) ? '{"ok":true}' : '{"error":"save failed"}';
+    exit;
+}
+
 $txt = clip(g($in, 'text', ''), 2000);
 if ($txt === '') { http_response_code(400); echo '{"error":"empty text"}'; exit; }
 
