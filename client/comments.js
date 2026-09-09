@@ -15,23 +15,6 @@
       body: body ? JSON.stringify(body) : undefined
     }).then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); });
   }
-
-  // локальный запас — когда сервера (comments.php) нет, напр. на GitHub Pages
-  var LSK = 'proto-cmt-' + PAGE;
-  function lsGet() { try { return JSON.parse(localStorage.getItem(LSK) || '[]'); } catch (e) { return []; } }
-  function lsSet(a) { try { localStorage.setItem(LSK, JSON.stringify(a)); } catch (e) { } }
-  function lsAdd(c) {
-    c.id = c.id || ('L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
-    c.replies = c.replies || [];
-    var a = lsGet(); a.push(c); lsSet(a); return c;
-  }
-  function lsReply(id, text) {
-    var a = lsGet();
-    for (var i = 0; i < a.length; i++) {
-      if (a[i].id === id) { (a[i].replies = a[i].replies || []).push({ text: text, author: 'gleb', ts: Date.now() }); }
-    }
-    lsSet(a);
-  }
   function el(t, c, h) { var e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (m) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]; }); }
   function fmt(ts) { try { return new Date(ts).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
@@ -113,13 +96,9 @@
       var t = ta.value.trim();
       if (!t) { ta.focus(); return; }
       var btn = f.querySelector('.csend'); btn.disabled = true; btn.textContent = '…';
-      var rec = { action: 'add', page: PAGE, bi: loc.bi, block: loc.block, rx: loc.rx, ry: loc.ry, text: t };
-      api('POST', rec)
+      api('POST', { action: 'add', page: PAGE, bi: loc.bi, block: loc.block, rx: loc.rx, ry: loc.ry, text: t })
         .then(reload).then(function () { f.remove(); setPlacing(false); })
-        .catch(function () {
-          lsAdd({ page: PAGE, bi: loc.bi, block: loc.block, rx: loc.rx, ry: loc.ry, text: t, author: 'client', ts: Date.now() });
-          reload().then(function () { f.remove(); setPlacing(false); });
-        });
+        .catch(function () { btn.disabled = false; btn.textContent = 'Отправить'; alert('Не отправилось. Проверьте интернет и попробуйте ещё раз.'); });
     };
   }
 
@@ -145,7 +124,7 @@
       if (!t) return;
       var btn = pop.querySelector('.csend'); btn.disabled = true; btn.textContent = '…';
       api('POST', { action: 'reply', id: c.id, text: t }).then(reload).then(closePopovers)
-        .catch(function () { lsReply(c.id, t); reload().then(closePopovers); });
+        .catch(function () { btn.disabled = false; btn.textContent = 'Ответить'; alert('Не отправилось, попробуйте ещё раз.'); });
     };
   }
 
@@ -177,13 +156,9 @@
 
   function reload() {
     return api('GET').then(function (all) {
-      var server = (all || []).filter(function (c) { return c.page === PAGE; });
-      items = server.concat(lsGet());
+      items = (all || []).filter(function (c) { return c.page === PAGE; });
       renderAll();
-    }).catch(function () {
-      items = lsGet();
-      renderAll();
-    });
+    }).catch(function () { });
   }
 
   function setPlacing(on) {

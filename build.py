@@ -9,7 +9,49 @@ try:
 except Exception:
     pass
 
-OUT = "docs"
+# режим client: сборка для клиента — без служебных аннотаций,
+# комментарии-пины с сохранением на сервере (comments.php).
+# режим pages: то же, но в docs/ и без PHP — комментарии в localStorage
+# (запасная площадка на GitHub Pages, пока хостинг под фильтром).
+CLIENT = "client" in sys.argv or "pages" in sys.argv
+PAGES = "pages" in sys.argv
+OUT = "docs" if (PAGES or not CLIENT) else "client"
+
+# ── ТИПОГРАФ: неразрывные пробелы после предлогов/союзов, в числах, инициалах
+_PREP = (r"в|во|на|над|под|перед|при|про|за|из|изо|из-за|из-под|с|со|к|ко|у|о|"
+         r"об|обо|от|ото|до|по|для|без|безо|через|около|между|среди|против|"
+         r"и|а|но|да|не|ни|что|чтоб|чтобы|как|так|же|бы|б|ли|то|или|либо|если|"
+         r"это|уже|ещё|еще|вы|мы|он|она|они")
+
+
+_TPRE = r"(?i)(^|[\s(«\"'>—–-]|&\w+;|&#\d+;)(%s)\s+" % _PREP
+
+
+def _typo_text(t):
+    t = re.sub(_TPRE, "\\1\\2\u00a0", t)
+    t = re.sub(_TPRE, "\\1\\2\u00a0", t)
+    t = re.sub(r"(\d)\s+(?=\d{3}\b)", "\\1\u00a0", t)
+    t = re.sub(r"(\d)\s+(?=\d{3}\b)", "\\1\u00a0", t)
+    t = re.sub(r"(\d)\s+(₽|&#8381;|м²|м³|м2|км|мм|см|кг|т|%|дн\w*|дней|день|"
+               r"лет|год\w*|года|мес\w*|шт\w*|чел\w*)", "\\1\u00a0\\2", t)
+    t = re.sub(r"([А-ЯЁ])\.\s+(?=[А-ЯЁ])", "\\1.\u00a0", t)
+    t = re.sub(r"\bт\.\s*([дпек])\.", "т.\u00a0\\1.", t)
+    t = re.sub(r"\s+(—|&mdash;)", "\u00a0\\1", t)
+    return t
+
+
+def typo(html):
+    out = []
+    for ch in re.split(r"(<style[\s\S]*?</style>|<script[\s\S]*?</script>)", html):
+        if ch[:6] in ("<style", "<scrip"):
+            out.append(ch)
+            continue
+        parts = re.split(r"(<[^>]+>)", ch)
+        for i, p in enumerate(parts):
+            if p[:1] != "<":
+                parts[i] = _typo_text(p)
+        out.append("".join(parts))
+    return "".join(out)
 
 # ─────────────────────────────────────────────────────────────── СТИЛИ
 
@@ -284,14 +326,15 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .g2,.g3,.g4,.g5{grid-template-columns:1fr}
   .split{gap:16px}
 
-  /* шапка: логотип + бургер + телефон, кнопку прячем */
+  /* шапка: логотип слева, телефон и бургер — справа */
   .top-in{gap:10px;padding:10px 13px;flex-wrap:wrap}
+  .logo{order:1}
   .top .btn.sm{display:none}
-  .top-phone{font-size:13.5px;margin-left:auto}
   .top .social{display:none}
-  .burger{display:block;margin-left:0}
+  .top-phone{font-size:13.5px;order:2;margin-left:auto}
+  .burger{display:block;order:3;margin-left:0}
   .nav{display:none}
-  .nav.open{display:flex;flex-direction:column;width:100%;order:3;gap:2px;
+  .nav.open{display:flex;flex-direction:column;width:100%;order:4;gap:2px;
     padding:8px 0 0;border-top:1px solid #eee;margin-left:0}
   .nav.open a{padding:9px 4px;border-bottom:1px solid #f0f0f0}
 
@@ -346,12 +389,13 @@ def reset():
 def sec(label, inner, note):
     """Секция-карточка со сквозным номером, лейблом и аннотацией."""
     _n[0] += 1
+    note_html = "" if CLIENT else '  <p class="note">%s</p>\n' % note
     return (
         '<section>\n'
         '  <div class="sec-label">%d &middot; %s</div>\n'
         '%s\n'
-        '  <p class="note">%s</p>\n'
-        '</section>\n' % (_n[0], label.upper(), inner, note)
+        '%s'
+        '</section>\n' % (_n[0], label.upper(), inner, note_html)
     )
 
 
@@ -668,9 +712,7 @@ def page_index():
               "Фиксированная цена в договоре"),
         btns(btn("Рассчитать стоимость", href="#quiz"),
              btn("Посмотреть варианты домов", ghost=True, href="#doma")),
-        ph("Фото: реальный одноэтажный каркасный дом компании,<br>общий план с участком, "
-           "дневной свет, зелень.<br><br><b>Важно:</b> не барнхаус &mdash; он выглядит "
-           "дорого<br>и отпугивает основную аудиторию.", "tall")),
+        ph("Фото: одноэтажный каркасный дом,<br>общий план с участком", "tall")),
         "Экран за три секунды отвечает: что строим, за сколько, как быстро. "
         "Цена в оффере отсекает нецелевой трафик и снимает «наверное, дорого». "
         "Подзаголовок держит один аргумент &mdash; цену сразу в разговоре, чего "
@@ -963,8 +1005,7 @@ def page_index():
     <div>%s</div>
   </div>""" % (
         btns(btn("Обсудить проект", href="#quiz")),
-        ph("Фото: рукописный чертёж клиента<br>рядом с готовым домом по нему.<br><br>"
-           "Сильный визуал: «вот так нарисовали &mdash;<br>вот что построили».", "wide")),
+        ph("Фото: рукописный чертёж клиента<br>рядом с готовым домом по нему", "wide")),
         "Закрывает возражение с созвона: у конкурентов «пришлите проект», "
         "и человек уходит. Вы строите по рисунку от руки, но на сайте "
         "этого нет. Блок выносит вашу особенность в аргумент."))
@@ -1551,17 +1592,36 @@ def check_repeats(html, page):
 if __name__ == "__main__":
     if not os.path.isdir(OUT):
         os.makedirs(OUT)
-    shutil.copy("comments.js", os.path.join(OUT, "comments.js"))
-    open(os.path.join(OUT, ".nojekyll"), "w").close()
+    if PAGES:
+        shutil.copy("client_comments.js", os.path.join(OUT, "comments.js"))
+        open(os.path.join(OUT, ".nojekyll"), "w").close()
+        for junk in ("comments.php", "comments.json"):
+            jp = os.path.join(OUT, junk)
+            if os.path.exists(jp):
+                os.remove(jp)
+    elif CLIENT:
+        shutil.copy("client_comments.js", os.path.join(OUT, "comments.js"))
+        shutil.copy("comments.php", os.path.join(OUT, "comments.php"))
+        if not os.path.exists(os.path.join(OUT, "comments.json")):
+            io.open(os.path.join(OUT, "comments.json"), "w",
+                    encoding="utf-8").write("[]")
+    else:
+        shutil.copy("comments.js", os.path.join(OUT, "comments.js"))
+        open(os.path.join(OUT, ".nojekyll"), "w").close()
+
     built = {}
     for name, fn in PAGES.items():
-        html = fn()
+        html = typo(fn())
         built[name] = html
         with io.open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
             f.write(html)
         stubs = len(re.findall(r'class="stub"', html))
         secs = len(re.findall(r"<section>", html))
         print("  %-12s  %2d блоков, %2d заглушек" % (name, secs, stubs))
+
+    if CLIENT:
+        print("\nOK -> %s/ (клиентская версия, комментарии-пины)" % OUT)
+        sys.exit(0)
 
     print()
     total = sum(check_repeats(built[n], n) for n in ("index.html",))
