@@ -378,7 +378,8 @@
     '@media(max-width:640px){',
     '.cform,.cthread{position:fixed;left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto}',
     '.clist{left:8px;right:8px;width:auto;bottom:116px}',
-    '.cfab{right:8px;bottom:8px}.clistbtn{right:8px;bottom:58px}}'
+    '.cfab{right:8px;bottom:8px}.clistbtn{right:8px;bottom:58px}',
+    '.cform textarea,.cthread textarea,.cxarea textarea{font-size:16px}}'
   ].join('');
   document.head.appendChild(css);
 })();
