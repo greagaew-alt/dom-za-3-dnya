@@ -25,7 +25,7 @@ h1,h2,h3{overflow-wrap:break-word}
 
 /* шапка */
 .top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e5e5e5}
-.top-in{max-width:1120px;margin:0 auto;padding:12px 20px;
+.top-in{max-width:1320px;margin:0 auto;padding:12px 20px;
   display:flex;align-items:center;gap:20px}
 .logo{font-weight:700;font-size:17px;letter-spacing:-.02em;white-space:nowrap}
 .logo small{display:block;font-weight:400;font-size:10.5px;color:#888;letter-spacing:0}
@@ -37,7 +37,7 @@ h1,h2,h3{overflow-wrap:break-word}
   border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
 
 /* каркас страницы */
-main{max-width:1120px;margin:0 auto;padding:22px 20px 90px}
+main{max-width:1320px;margin:0 auto;padding:22px 20px 90px}
 .crumb{font-size:12.5px;color:#999;margin:0 0 14px}
 .crumb a{color:#666}
 
@@ -157,10 +157,11 @@ tr:last-child td{border-bottom:0}
 
 /* футер */
 footer{border-top:1px solid #e5e5e5;background:#fafafa}
-.foot-in{max-width:1120px;margin:0 auto;padding:26px 20px;display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;gap:22px;font-size:13px;color:#666}
+.foot-in{max-width:1320px;margin:0 auto;padding:26px 20px;display:grid;
+  grid-template-columns:1.5fr 1fr 1.4fr 1.2fr;gap:22px;font-size:13px;color:#666}
 .foot-in b{color:#111;display:block;margin:0 0 7px;font-size:13px}
-.foot-in a{text-decoration:none;display:block;margin:0 0 4px}
+.foot-in a{text-decoration:none;display:inline}
+.foot-in .social{margin-top:11px}
 
 /* комментарии (из скилла) */
 .cmt-btn{position:absolute;top:8px;right:10px;background:#fff;border:1px solid #ccc;
@@ -183,6 +184,16 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 #cmt-page-panel{position:relative;background:#fafafa;border:1px dashed #ccc;
   border-radius:14px;padding:16px;margin:0 0 18px}
 .cmt-panel-title{font-size:12.5px;color:#777;margin:0 0 8px;font-weight:600}
+
+/* соцсети */
+.social{display:flex;gap:7px;align-items:center}
+.social a{width:32px;height:32px;border:1px solid #d5d5d5;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:#333;
+  text-decoration:none;flex:none}
+.social a:hover{border-color:#111;color:#111}
+.social svg{width:17px;height:17px;fill:currentColor}
+.social .ismax{font-size:9px;font-weight:800;letter-spacing:.02em}
+.foot-social{margin-top:11px}
 
 /* каталог: фильтры слева, карточки справа */
 .catwrap{display:grid;grid-template-columns:236px 1fr;gap:24px;align-items:start}
@@ -229,6 +240,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   main{max-width:none}
 
   /* каталог: фильтры наверх, навигация по типам — лентой */
+  .foot-in{grid-template-columns:1fr 1fr}
   .catwrap{grid-template-columns:1fr;gap:16px}
   .filters{position:static;padding:12px}
   .fg{border-bottom:0;padding:0 0 4px}
@@ -258,6 +270,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .top-in{gap:10px;padding:10px 13px;flex-wrap:wrap}
   .top .btn.sm{display:none}
   .top-phone{font-size:13.5px;margin-left:auto}
+  .top .social{display:none}
   .burger{display:block;margin-left:0}
   .nav{display:none}
   .nav.open{display:flex;flex-direction:column;width:100%;order:3;gap:2px;
@@ -374,6 +387,18 @@ def form(title, fields, button, consent=True):
 
 
 S = lambda t: '<span class="stub">%s</span>' % t  # заглушка
+
+_TG = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.78 18.65l.28-4.23'
+       ' 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3'
+       'l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71'
+       'L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>')
+
+
+def social(cls=""):
+    return ('<div class="social %s">'
+            '<a href="#" title="Telegram" aria-label="Telegram">%s</a>'
+            '<a href="#" title="MAX" aria-label="MAX" class="ismax">MAX</a>'
+            '</div>' % (cls, _TG))
 
 
 def r(n):
@@ -551,6 +576,7 @@ def shell(title, body, crumb=""):
     <button class="burger" onclick="document.querySelector('.nav').classList.toggle('open')">Меню</button>
     <nav class="nav">%s</nav>
     <div class="top-phone">+7 (843) 203-82-82</div>
+    %s
     <a class="btn sm" href="index.html#quiz">Рассчитать стоимость</a>
   </div>
 </header>
@@ -572,9 +598,15 @@ def shell(title, body, crumb=""):
     </div>
     <div>
       <b>Контакты</b>
-      +7 (843) 203-82-82<br>+7 (843) 260-88-87<br>
-      %s<br>
+      +7 (843) 203-82-82<br>+7 (843) 260-88-87<br>+7 (903) 305-62-44<br>
+      г. Казань, ул. М. Миля, д. 59<br>
+      andr0000@yandex.ru
       %s
+    </div>
+    <div>
+      <b>Часы работы</b>
+      Пн–Пт: с 8:00 до 17:00<br>Сб–Вс: с 8:00 до 15:00<br>
+      <span style="color:#999">WhatsApp: +7 903 305-62-44</span>
     </div>
   </div>
 </footer>
@@ -582,9 +614,9 @@ def shell(title, body, crumb=""):
 <script src="comments.js"></script>
 </body>
 </html>
-""" % (title, CSS, nav, crumb, body,
+""" % (title, CSS, nav, social(""), crumb, body,
        "".join('<a href="%s">%s</a>' % (h, t) for t, h in NAV),
-       S("адрес офиса — уточнить"), S("режим работы — уточнить"))
+       social("foot-social"))
 
 
 # ══════════════════════════════════════════════════════ ГЛАВНАЯ
@@ -1008,21 +1040,22 @@ def page_index():
       без долгих расчётов и скрытых доплат.</p>
       %s
       <div style="margin-top:18px" class="small">
-        <b>Телефоны:</b> +7 (843) 203-82-82, +7 (843) 260-88-87<br>
-        <b>Офис:</b> %s<br>
-        <b>Режим работы:</b> %s<br>
-        <b>Мессенджеры:</b> %s
+        <b>Телефоны:</b> +7 (843) 203-82-82, +7 (843) 260-88-87,
+        +7 (903) 305-62-44<br>
+        <b>Офис:</b> г. Казань, ул. М. Миля, д. 59<br>
+        <b>Режим работы:</b> Пн–Пт с 8:00 до 17:00, Сб–Вс с 8:00 до 15:00<br>
+        <b>Почта:</b> andr0000@yandex.ru<br>
+        <b>Мессенджеры:</b> WhatsApp +7 903 305-62-44, Telegram, MAX
       </div>
+      <div style="margin-top:12px">%s</div>
     </div>
     <div>%s</div>
   </div>""" % (
         form("", ["Ваше имя", "Телефон"], "Рассчитать стоимость"),
-        S("адрес офиса — уточнить"), S("режим работы — уточнить"),
-        S("WhatsApp / Telegram — уточнить"),
+        social(""),
         ph("Карта: расположение офиса<br>+ зона выезда 100 км вокруг Казани", "wide")),
-        "Форма для тех, кто дочитал, но не прошёл квиз. Два поля: имя и телефон, "
-        "остальное &mdash; в разговоре. Рядом номера для тех, кто звонит сам. "
-        "<b>Уточнить:</b> адрес, режим работы, мессенджеры."))
+        "Контакты взяты с подвала старого сайта. Форма для тех, кто дочитал, "
+        "но не прошёл квиз: два поля, остальное &mdash; в разговоре."))
 
     return shell("Прототип — Дом за 3 дня", "".join(b))
 
@@ -1155,25 +1188,38 @@ def page_bani():
   <h2>Размеры и цены</h2>
   <p class="sub">Сравнение размеров, состава, сроков и стоимости.</p>
   %s""" % table(["Размер", "Состав", "Срок", "Цена"], [
-        [S("3×4"), S("парная, мойка, комната отдыха"), S("N дней"), S("от N ₽")],
-        [S("3×5"), S("состав уточнить"), S("N дней"), S("от N ₽")],
-        [S("4×6"), S("состав уточнить"), S("N дней"), S("от N ₽")],
+        ["3&times;4", "Парная, моечная и комната отдыха", S("N дней"), S("от N ₽")],
+        ["3&times;5", "Парная, моечная, комната отдыха с окном и небольшой тамбур",
+         S("N дней"), S("от N ₽")],
+        ["4&times;6", "Парная, моечная, просторная комната отдыха и крытая терраса",
+         S("N дней"), S("от N ₽")],
     ]),
         "Таблицей, а не карточками: бань немного, и человеку важно быстро "
-        "сравнить размер и цену. <b>Нужно от клиента:</b> размеры бань и цены."))
+        "сравнить размер и цену. Состав написал от себя &mdash; клиент поправит. "
+        "<b>Нужно от клиента:</b> сроки и цены по каждому размеру."))
 
     b.append(sec("Что входит в стоимость", """
   <h2>Что входит в стоимость</h2>
   %s
-  <p class="small" style="margin-top:11px">Отдельно считаются: %s</p>""" % (
+  <p class="small" style="margin-top:11px">Отдельно считаются: фундамент под
+  тяжёлую печь, доставка дальше 100 км, купель, подключение воды и слива,
+  электрика.</p>""" % (
         grid(3, [
-            card("Каркас и кровля", S("состав уточнить")),
-            card("Внутренняя отделка", S("вагонка? липа? — уточнить")),
-            card("Печь и дымоход", S("входит или нет — уточнить")),
-        ]),
-        S("фундамент, доставка, купель, бак для воды — уточнить")),
-        "Тот же принцип, что в комплектациях домов: явно разделяем «входит» "
-        "и «считается отдельно», чтобы не было сюрпризов."))
+            card("Каркас и кровля",
+                 "Каркас из строганой доски естественной влажности, обвязка "
+                 "на сваях, стропильная система и кровля из профнастила "
+                 "с карнизами и подшивкой."),
+            card("Внутренняя отделка",
+                 "Парная обшита липовой вагонкой, моечная и комната отдыха "
+                 "&mdash; хвойной. Полки в парной из липы, в моечной пол "
+                 "с уклоном к трапу."),
+            card("Печь и дымоход",
+                 "Дровяная банная печь с баком для воды, дымоход с проходом "
+                 "через кровлю и разделкой, защитный экран у печи."),
+        ])),
+        "Состав карточек написал от себя по типовой каркасной бане &mdash; "
+        "клиент даст правки. Принцип тот же, что в комплектациях домов: "
+        "явно разделяем «входит» и «считается отдельно»."))
 
     b.append(sec("Реальные бани", """
   <h2>Реальные бани</h2>
@@ -1181,13 +1227,16 @@ def page_bani():
   %s""" % grid(3, [
         '<div class="card">%s<h3 style="margin-top:10px">Баня %s</h3>'
         '<div class="small">%s &middot; срок %s</div>'
-        '<div class="price">%s</div></div>' % (
-            ph("Фото бани " + str(i), "sq"), S("3×4"),
-            S("парная, мойка, отдых"), S("N дней"), S("от N ₽"))
-        for i in range(1, 4)
+        '<div class="price">%s</div></div>' % (ph("Фото бани " + str(i), "sq"), sz, comp,
+                                               S("N дней"), S("от N ₽"))
+        for i, (sz, comp) in enumerate([
+            ("3&times;4", "Парная, моечная, комната отдыха"),
+            ("3&times;5", "С тамбуром и окном в комнате отдыха"),
+            ("4&times;6", "С крытой террасой под общей крышей"),
+        ], 1)
     ]),
-        "Блок доверия: показываем реально построенные бани. "
-        "<b>Нужно от клиента:</b> фото бань с параметрами."))
+        "Блок доверия: показываем реально построенные бани. Подписи написал "
+        "от себя. <b>Нужно от клиента:</b> фото бань и цены."))
 
     b.append(sec("Как проходит строительство", """
   <h2>Как проходит строительство</h2>

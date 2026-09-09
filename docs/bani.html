@@ -16,7 +16,7 @@ h1,h2,h3{overflow-wrap:break-word}
 
 /* шапка */
 .top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #e5e5e5}
-.top-in{max-width:1120px;margin:0 auto;padding:12px 20px;
+.top-in{max-width:1320px;margin:0 auto;padding:12px 20px;
   display:flex;align-items:center;gap:20px}
 .logo{font-weight:700;font-size:17px;letter-spacing:-.02em;white-space:nowrap}
 .logo small{display:block;font-weight:400;font-size:10.5px;color:#888;letter-spacing:0}
@@ -28,7 +28,7 @@ h1,h2,h3{overflow-wrap:break-word}
   border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
 
 /* каркас страницы */
-main{max-width:1120px;margin:0 auto;padding:22px 20px 90px}
+main{max-width:1320px;margin:0 auto;padding:22px 20px 90px}
 .crumb{font-size:12.5px;color:#999;margin:0 0 14px}
 .crumb a{color:#666}
 
@@ -148,10 +148,11 @@ tr:last-child td{border-bottom:0}
 
 /* футер */
 footer{border-top:1px solid #e5e5e5;background:#fafafa}
-.foot-in{max-width:1120px;margin:0 auto;padding:26px 20px;display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;gap:22px;font-size:13px;color:#666}
+.foot-in{max-width:1320px;margin:0 auto;padding:26px 20px;display:grid;
+  grid-template-columns:1.5fr 1fr 1.4fr 1.2fr;gap:22px;font-size:13px;color:#666}
 .foot-in b{color:#111;display:block;margin:0 0 7px;font-size:13px}
-.foot-in a{text-decoration:none;display:block;margin:0 0 4px}
+.foot-in a{text-decoration:none;display:inline}
+.foot-in .social{margin-top:11px}
 
 /* комментарии (из скилла) */
 .cmt-btn{position:absolute;top:8px;right:10px;background:#fff;border:1px solid #ccc;
@@ -174,6 +175,16 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 #cmt-page-panel{position:relative;background:#fafafa;border:1px dashed #ccc;
   border-radius:14px;padding:16px;margin:0 0 18px}
 .cmt-panel-title{font-size:12.5px;color:#777;margin:0 0 8px;font-weight:600}
+
+/* соцсети */
+.social{display:flex;gap:7px;align-items:center}
+.social a{width:32px;height:32px;border:1px solid #d5d5d5;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:#333;
+  text-decoration:none;flex:none}
+.social a:hover{border-color:#111;color:#111}
+.social svg{width:17px;height:17px;fill:currentColor}
+.social .ismax{font-size:9px;font-weight:800;letter-spacing:.02em}
+.foot-social{margin-top:11px}
 
 /* каталог: фильтры слева, карточки справа */
 .catwrap{display:grid;grid-template-columns:236px 1fr;gap:24px;align-items:start}
@@ -220,6 +231,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   main{max-width:none}
 
   /* каталог: фильтры наверх, навигация по типам — лентой */
+  .foot-in{grid-template-columns:1fr 1fr}
   .catwrap{grid-template-columns:1fr;gap:16px}
   .filters{position:static;padding:12px}
   .fg{border-bottom:0;padding:0 0 4px}
@@ -249,6 +261,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .top-in{gap:10px;padding:10px 13px;flex-wrap:wrap}
   .top .btn.sm{display:none}
   .top-phone{font-size:13.5px;margin-left:auto}
+  .top .social{display:none}
   .burger{display:block;margin-left:0}
   .nav{display:none}
   .nav.open{display:flex;flex-direction:column;width:100%;order:3;gap:2px;
@@ -298,6 +311,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
     <button class="burger" onclick="document.querySelector('.nav').classList.toggle('open')">Меню</button>
     <nav class="nav"><a href="index.html#doma">Дома и цены</a><a href="catalog.html">Каталог</a><a href="index.html#komplektacii">Комплектации</a><a href="index.html#objekty">Наши объекты</a><a href="index.html#kak">Как строим</a><a href="bani.html">Бани</a><a href="index.html#otzyvy">Отзывы</a></nav>
     <div class="top-phone">+7 (843) 203-82-82</div>
+    <div class="social "><a href="#" title="Telegram" aria-label="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg></a><a href="#" title="MAX" aria-label="MAX" class="ismax">MAX</a></div>
     <a class="btn sm" href="index.html#quiz">Рассчитать стоимость</a>
   </div>
 </header>
@@ -324,24 +338,26 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 
   <h2>Размеры и цены</h2>
   <p class="sub">Сравнение размеров, состава, сроков и стоимости.</p>
-  <div class="tbl"><table><tr><th>Размер</th><th>Состав</th><th>Срок</th><th>Цена</th></tr><tr><td><span class="stub">3×4</span></td><td><span class="stub">парная, мойка, комната отдыха</span></td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr><tr><td><span class="stub">3×5</span></td><td><span class="stub">состав уточнить</span></td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr><tr><td><span class="stub">4×6</span></td><td><span class="stub">состав уточнить</span></td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr></table></div>
-  <p class="note">Таблицей, а не карточками: бань немного, и человеку важно быстро сравнить размер и цену. <b>Нужно от клиента:</b> размеры бань и цены.</p>
+  <div class="tbl"><table><tr><th>Размер</th><th>Состав</th><th>Срок</th><th>Цена</th></tr><tr><td>3&times;4</td><td>Парная, моечная и комната отдыха</td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr><tr><td>3&times;5</td><td>Парная, моечная, комната отдыха с окном и небольшой тамбур</td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr><tr><td>4&times;6</td><td>Парная, моечная, просторная комната отдыха и крытая терраса</td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr></table></div>
+  <p class="note">Таблицей, а не карточками: бань немного, и человеку важно быстро сравнить размер и цену. Состав написал от себя &mdash; клиент поправит. <b>Нужно от клиента:</b> сроки и цены по каждому размеру.</p>
 </section>
 <section>
   <div class="sec-label">3 &middot; ЧТО ВХОДИТ В СТОИМОСТЬ</div>
 
   <h2>Что входит в стоимость</h2>
-  <div class="g g3"><div class="card"><h3>Каркас и кровля</h3><div class="small"><span class="stub">состав уточнить</span></div></div><div class="card"><h3>Внутренняя отделка</h3><div class="small"><span class="stub">вагонка? липа? — уточнить</span></div></div><div class="card"><h3>Печь и дымоход</h3><div class="small"><span class="stub">входит или нет — уточнить</span></div></div></div>
-  <p class="small" style="margin-top:11px">Отдельно считаются: <span class="stub">фундамент, доставка, купель, бак для воды — уточнить</span></p>
-  <p class="note">Тот же принцип, что в комплектациях домов: явно разделяем «входит» и «считается отдельно», чтобы не было сюрпризов.</p>
+  <div class="g g3"><div class="card"><h3>Каркас и кровля</h3><div class="small">Каркас из строганой доски естественной влажности, обвязка на сваях, стропильная система и кровля из профнастила с карнизами и подшивкой.</div></div><div class="card"><h3>Внутренняя отделка</h3><div class="small">Парная обшита липовой вагонкой, моечная и комната отдыха &mdash; хвойной. Полки в парной из липы, в моечной пол с уклоном к трапу.</div></div><div class="card"><h3>Печь и дымоход</h3><div class="small">Дровяная банная печь с баком для воды, дымоход с проходом через кровлю и разделкой, защитный экран у печи.</div></div></div>
+  <p class="small" style="margin-top:11px">Отдельно считаются: фундамент под
+  тяжёлую печь, доставка дальше 100 км, купель, подключение воды и слива,
+  электрика.</p>
+  <p class="note">Состав карточек написал от себя по типовой каркасной бане &mdash; клиент даст правки. Принцип тот же, что в комплектациях домов: явно разделяем «входит» и «считается отдельно».</p>
 </section>
 <section>
   <div class="sec-label">4 &middot; РЕАЛЬНЫЕ БАНИ</div>
 
   <h2>Реальные бани</h2>
   <p class="sub">Фотографии готовых объектов.</p>
-  <div class="g g3"><div class="card"><div class="ph sq">Фото бани 1</div><h3 style="margin-top:10px">Баня <span class="stub">3×4</span></h3><div class="small"><span class="stub">парная, мойка, отдых</span> &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани 2</div><h3 style="margin-top:10px">Баня <span class="stub">3×4</span></h3><div class="small"><span class="stub">парная, мойка, отдых</span> &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани 3</div><h3 style="margin-top:10px">Баня <span class="stub">3×4</span></h3><div class="small"><span class="stub">парная, мойка, отдых</span> &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div></div>
-  <p class="note">Блок доверия: показываем реально построенные бани. <b>Нужно от клиента:</b> фото бань с параметрами.</p>
+  <div class="g g3"><div class="card"><div class="ph sq">Фото бани 1</div><h3 style="margin-top:10px">Баня 3&times;4</h3><div class="small">Парная, моечная, комната отдыха &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани 2</div><h3 style="margin-top:10px">Баня 3&times;5</h3><div class="small">С тамбуром и окном в комнате отдыха &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани 3</div><h3 style="margin-top:10px">Баня 4&times;6</h3><div class="small">С крытой террасой под общей крышей &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div></div>
+  <p class="note">Блок доверия: показываем реально построенные бани. Подписи написал от себя. <b>Нужно от клиента:</b> фото бань и цены.</p>
 </section>
 <section>
   <div class="sec-label">5 &middot; КАК ПРОХОДИТ СТРОИТЕЛЬСТВО</div>
@@ -380,9 +396,15 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
     </div>
     <div>
       <b>Контакты</b>
-      +7 (843) 203-82-82<br>+7 (843) 260-88-87<br>
-      <span class="stub">адрес офиса — уточнить</span><br>
-      <span class="stub">режим работы — уточнить</span>
+      +7 (843) 203-82-82<br>+7 (843) 260-88-87<br>+7 (903) 305-62-44<br>
+      г. Казань, ул. М. Миля, д. 59<br>
+      andr0000@yandex.ru
+      <div class="social foot-social"><a href="#" title="Telegram" aria-label="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg></a><a href="#" title="MAX" aria-label="MAX" class="ismax">MAX</a></div>
+    </div>
+    <div>
+      <b>Часы работы</b>
+      Пн–Пт: с 8:00 до 17:00<br>Сб–Вс: с 8:00 до 15:00<br>
+      <span style="color:#999">WhatsApp: +7 903 305-62-44</span>
     </div>
   </div>
 </footer>
