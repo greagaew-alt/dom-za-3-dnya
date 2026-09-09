@@ -184,12 +184,62 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   border-radius:14px;padding:16px;margin:0 0 18px}
 .cmt-panel-title{font-size:12.5px;color:#777;margin:0 0 8px;font-weight:600}
 
+/* каталог: фильтры слева, карточки справа */
+.catwrap{display:grid;grid-template-columns:236px 1fr;gap:24px;align-items:start}
+.filters{position:sticky;top:74px;background:#fff;border:1px solid #e0e0e0;
+  border-radius:12px;padding:6px 15px 15px;display:flex;flex-direction:column}
+.fg{border-bottom:1px solid #eee;padding:14px 0}
+.fg:last-child{border-bottom:0;padding-bottom:2px}
+.fg h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#8a8a8a;
+  font-weight:700;margin:0 0 9px}
+.fnav{display:flex;flex-direction:column;gap:2px}
+.fnav a{display:block;padding:8px 10px;border-radius:8px;font-size:13.5px;
+  text-decoration:none;color:#333}
+.fnav a:hover{background:#f2f2f2}
+.fnav a.act{background:#111;color:#fff;font-weight:600}
+.fopt{display:flex;align-items:center;gap:9px;font-size:13px;color:#444;padding:5px 0;cursor:pointer}
+.fopt::before{content:"";width:15px;height:15px;border:1.5px solid #bcbcbc;
+  border-radius:4px;flex:none;background:#fcfcfc}
+.fopt.rad::before{border-radius:50%}
+.fopt.on::before{background:#111;border-color:#111;box-shadow:inset 0 0 0 3px #fff}
+.slider{height:4px;background:#dedede;border-radius:2px;position:relative;margin:16px 6px 8px}
+.slider span{position:absolute;top:50%;width:15px;height:15px;background:#111;
+  border-radius:50%;transform:translate(-50%,-50%);border:2px solid #fff;
+  box-shadow:0 0 0 1px #111}
+.slider span:first-child{left:8%}.slider span:last-child{left:88%}
+.srow{display:flex;justify-content:space-between;font-size:11.5px;color:#8a8a8a}
+.fbtns{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.catmain{min-width:0}
+.catbar{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  flex-wrap:wrap;padding:0 0 14px;margin:0 0 18px;border-bottom:1px solid #eee}
+.catbar .cnt{font-size:13.5px;color:#555;font-weight:600}
+.catbar .sort{border:1px solid #d5d5d5;border-radius:8px;padding:8px 12px;
+  font-size:12.5px;color:#555;background:#fcfcfc}
+.ctype{margin:0 0 30px}
+.ctype:last-child{margin-bottom:0}
+.ctype > h3{font-size:16.5px;margin:0 0 3px}
+.ctype .pnote{font-size:12.5px;color:#8a8a8a;margin:0 0 13px}
+.filters-m{display:none}
+
 /* планшет */
 @media(max-width:900px){
   .split{grid-template-columns:1fr;gap:18px}
   .g4,.g5{grid-template-columns:repeat(2,1fr)}
   .g3{grid-template-columns:repeat(2,1fr)}
   main{max-width:none}
+
+  /* каталог: фильтры наверх, навигация по типам — лентой */
+  .catwrap{grid-template-columns:1fr;gap:16px}
+  .filters{position:static;padding:12px}
+  .fg{border-bottom:0;padding:0 0 4px}
+  .fg.desk{display:none}
+  .fnav{flex-direction:row;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    gap:7px;padding-bottom:2px}
+  .fnav a{white-space:nowrap;border:1px solid #ddd}
+  .fnav a span{display:none}
+  .fnav a.act{border-color:#111}
+  .filters-m{display:block;margin-top:10px;border:1px solid #d5d5d5;
+    border-radius:8px;padding:9px 12px;font-size:12.5px;color:#666;background:#fcfcfc}
 }
 /* телефон */
 @media(max-width:640px){
@@ -813,13 +863,13 @@ def page_index():
   <p class="sub">В стройке вы отдаёте деньги вперёд незнакомой компании.
   Показываем, что стоит за нашими обещаниями.</p>
   %s""" % grid(3, [
-        card("Что зафиксировано в договоре",
+        card("Всё зафиксировано в договоре",
              "Сумма, состав работ, сроки и ответственность сторон. "
              "Договор подписываем до завоза материалов."),
         card("Гарантия 5 лет",
              "Прописана в договоре. Распространяется на конструктив дома: "
              "каркас, кровлю и качество работ."),
-        card("Что остаётся у вас на руках",
+        card("Всё остаётся у вас на руках",
              "Договор, смета, акт приёма-передачи и гарантийный талон &mdash; "
              "полный комплект документов."),
         card("Приёмка по акту",
@@ -1196,37 +1246,79 @@ def page_catalog():
         "не растягивает лендинг. Ссылка на неё &mdash; в меню и в блоке «Каталог» "
         "на главной."))
 
-    b.append(sec("Каталог — фильтр", """
-  <h2>Подбор по параметрам</h2>
-  <p class="sub">Рабочий фильтр появится на этапе вёрстки. Здесь показан состав.</p>
-  <div class="card">
-    <div class="chips">
-      <span class="chip">Тип: одноэтажный / с мансардой / 1,5 этажа / 4-скатная</span>
-      <span class="chip">Размер: от 3&times;4 до 6&times;9</span>
-      <span class="chip">Площадь: 12&ndash;54 м&sup2;</span>
-      <span class="chip">Комплектация: Оптимальная / Стандарт / Зимняя дача</span>
-      <span class="chip">Цена: 590 000 &ndash; 2 335 000 &#8381;</span>
-      <span class="chip">Сортировка: дешевле / дороже / по площади</span>
-    </div>
-  </div>""",
-        "Фильтр как у сильных конкурентов (Каркасник, Багров Строй). "
-        "На прототипе &mdash; заглушка: клиент подтверждает набор параметров, "
-        "живой фильтр делается в вёрстке."))
+    # ── КАТАЛОГ: фильтры слева, карточки справа ──────────────────
+    fnav = "".join(
+        '<a href="#%s"%s>%s <span style="opacity:.6">&middot; от %s</span></a>' % (
+            TYPE_SLUG[k], ' class="act"' if i == 0 else '', k, r(type_min(k)))
+        for i, k in enumerate(TYPES))
 
+    filters = """
+  <aside class="filters">
+    <div class="fg">
+      <h4>Тип дома</h4>
+      <nav class="fnav">%s</nav>
+    </div>
+    <div class="fg desk">
+      <h4>Этажность</h4>
+      <label class="fopt on">Одноэтажный</label>
+      <label class="fopt">С мансардой</label>
+      <label class="fopt">Полутора этажа</label>
+    </div>
+    <div class="fg desk">
+      <h4>Площадь, м&sup2;</h4>
+      <div class="slider"><span></span><span></span></div>
+      <div class="srow"><b>12</b><b>54</b></div>
+    </div>
+    <div class="fg desk">
+      <h4>Цена, &#8381;</h4>
+      <div class="slider"><span></span><span></span></div>
+      <div class="srow"><b>590 000</b><b>2 335 000</b></div>
+    </div>
+    <div class="fg desk">
+      <h4>Комплектация</h4>
+      <label class="fopt rad on">Оптимальная</label>
+      <label class="fopt rad">Стандарт</label>
+      <label class="fopt rad">Зимняя дача</label>
+    </div>
+    <div class="fg desk">
+      <div class="fbtns">%s%s</div>
+    </div>
+    <div class="filters-m">На телефоне фильтры сворачиваются в кнопку
+    «Параметры», разделы выбираются лентой сверху.</div>
+  </aside>""" % (
+        fnav,
+        btn("Показать 36 домов", href="#odno"),
+        btn("Сбросить", ghost=True, href="#odno"))
+
+    types_html = ""
     for kind in TYPES:
         cards = grid(3, [dom_card(kind, sz) for sz in SIZES])
-        b.append(sec("Каталог — " + kind, """
-  <div id="%s"></div>
-  <h2>%s &mdash; от %s</h2>
-  <p class="sub">Девять размеров. В карточке &mdash; цена за комплектацию
-  «Оптимальная», полный расклад по трём комплектациям в таблице ниже.</p>
-  %s
-  <h3 style="margin:22px 0 10px">Цены по комплектациям</h3>
-  %s""" % (
-            TYPE_SLUG[kind], kind, r(type_min(kind)), cards, price_table(kind)),
-            "Данные со скана прайса клиента 03.2026. «Каркас» &mdash; коробка без "
-            "утепления и отделки; три следующие колонки &mdash; дом под ключ. "
-            "<b>Нужно:</b> фото домов этого типа."))
+        types_html += """
+    <div class="ctype" id="%s">
+      <h3>%s</h3>
+      <p class="pnote">9 размеров, от %s. В карточке цена за «Оптимальную»,
+      расклад по трём комплектациям &mdash; в таблице под сеткой.</p>
+      %s
+      <h4 style="font-size:13px;color:#888;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.05em">Цены по комплектациям</h4>
+      %s
+    </div>""" % (TYPE_SLUG[kind], kind, r(type_min(kind)), cards, price_table(kind))
+
+    b.append(sec("Каталог домов", """
+  <div class="catwrap">
+    %s
+    <div class="catmain">
+      <div class="catbar">
+        <span class="cnt">Найдено 36 проектов</span>
+        <span class="sort">Сортировка: сначала дешевле &#9662;</span>
+      </div>
+      %s
+    </div>
+  </div>""" % (filters, types_html),
+        "Стандартная раскладка каталога: слева панель фильтров (тип дома, "
+        "этажность, площадь, цена, комплектация), справа &mdash; сетка карточек "
+        "по разделам. Клик по типу в панели прокручивает к нужному разделу. "
+        "Фильтры на прототипе &mdash; заглушки: рабочая логика делается в вёрстке. "
+        "<b>Нужно:</b> фото домов по каждому типу, подтверждение прайса 03.2026."))
 
     b.append(sec("Каталог — что не входит в цену", """
   <h2>Что считается отдельно</h2>
