@@ -230,8 +230,7 @@
       + '<button class="cxbtn ghost" type="button" data-a="paste">Вставить</button>'
       + '</div>'
       + '<div class="cxarea" hidden><textarea placeholder="Вставьте сюда текст, который прислал клиент"></textarea>'
-      + '<button class="cxbtn" type="button" data-a="load">Загрузить</button></div>'
-      + '<p class="cxhint">«Скопировать всё» — для клиента: копирует все комментарии, чтобы прислать вам. «Вставить» — для вас: вставляете присланное и видите его пины.</p>';
+      + '<button class="cxbtn" type="button" data-a="load">Загрузить</button></div>';
     p.innerHTML = h;
     document.body.appendChild(p);
     p.querySelector('.cx').onclick = function () { p.remove(); };
@@ -374,7 +373,6 @@
     '.cxarea{margin:8px 0 0}',
     '.cxarea textarea{width:100%;min-height:70px;border:1px solid #d5d5d5;border-radius:8px;padding:8px;font:inherit;font-size:12px;box-sizing:border-box;resize:vertical}',
     '.cxarea .cxbtn{width:100%;flex:none;margin-top:6px}',
-    '.cxhint{font-size:11px;color:#999;margin:8px 0 0;line-height:1.4}',
     '@media(max-width:640px){',
     '.cform,.cthread{position:fixed;left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto}',
     '.clist{left:8px;right:8px;width:auto;bottom:116px}',
