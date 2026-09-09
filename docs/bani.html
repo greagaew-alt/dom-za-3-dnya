@@ -71,6 +71,17 @@ li{margin:4px 0}
 .ph.tall{min-height:260px}
 .ph.wide{min-height:190px}
 .ph.sq{min-height:120px}
+.ph.gal{min-height:300px}
+
+/* галерея-заглушка со стрелками листания */
+.gallery{position:relative}
+.arw{position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+  width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.75);
+  border:1px solid #dcdcdc;display:flex;align-items:center;justify-content:center;
+  font-size:17px;line-height:1;color:#8a8a8a;text-decoration:none;opacity:.45}
+.arw:hover{opacity:1;color:#333}
+.arw.l{left:9px}
+.arw.r{right:9px}
 
 /* сетки */
 .g{display:grid;gap:12px}
@@ -79,6 +90,9 @@ li{margin:4px 0}
 .g4{grid-template-columns:repeat(4,1fr)}
 .g5{grid-template-columns:repeat(5,1fr)}
 .split{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+.split-stretch{align-items:stretch}
+.split-stretch>div{min-width:0}
+.split-stretch .ph{height:100%}
 
 /* карточка */
 .card{background:#fff;border:1px solid #e0e0e0;border-radius:11px;padding:15px}
@@ -151,8 +165,12 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 .foot-in{max-width:1320px;margin:0 auto;padding:26px 20px;display:grid;
   grid-template-columns:1.5fr 1fr 1.4fr 1.2fr;gap:22px;font-size:13px;color:#666}
 .foot-in b{color:#111;display:block;margin:0 0 7px;font-size:13px}
-.foot-in a{text-decoration:none;display:inline}
+.foot-in a{text-decoration:none;display:block;margin:0 0 5px}
 .foot-in .social{margin-top:11px}
+.foot-in .social a{display:flex;margin:0}
+.foot-bottom{max-width:1320px;margin:0 auto;padding:13px 20px 4px;
+  border-top:1px solid #ececec;display:flex;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;font-size:12px;color:#999}
 
 /* комментарии (из скилла) */
 .cmt-btn{position:absolute;top:8px;right:10px;background:#fff;border:1px solid #ccc;
@@ -277,6 +295,8 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .ph{min-height:120px;padding:12px}
   .ph.tall{min-height:180px}
   .ph.wide{min-height:150px}
+  .ph.gal{min-height:190px}
+  .split-stretch .ph{height:auto;min-height:170px}
 
   /* формы и квиз */
   .form{max-width:none}
@@ -291,7 +311,9 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .step{padding:13px 13px 13px 46px}
   .step::before{left:12px}
 
-  .foot-in{grid-template-columns:1fr;gap:16px}
+  .foot-in{grid-template-columns:1fr;gap:16px;text-align:center}
+  .foot-in .social{justify-content:center}
+  .foot-bottom{flex-direction:column;align-items:center;text-align:center;gap:6px}
   .cmt-fab{right:10px;bottom:10px;padding:10px 14px;font-size:12.5px}
   .cmt-btn{position:static;display:block;margin:12px 0 0;width:100%}
 }
@@ -356,7 +378,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 
   <h2>Реальные бани</h2>
   <p class="sub">Фотографии готовых объектов.</p>
-  <div class="g g3"><div class="card"><div class="ph sq">Фото бани 1</div><h3 style="margin-top:10px">Баня 3&times;4</h3><div class="small">Парная, моечная, комната отдыха &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани 2</div><h3 style="margin-top:10px">Баня 3&times;5</h3><div class="small">С тамбуром и окном в комнате отдыха &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="ph sq">Фото бани 3</div><h3 style="margin-top:10px">Баня 4&times;6</h3><div class="small">С крытой террасой под общей крышей &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div></div>
+  <div class="g g3"><div class="card"><div class="gallery"><a class="arw l" href="#" aria-label="Предыдущее фото">&lsaquo;</a><div class="ph gal">Фото бани 1</div><a class="arw r" href="#" aria-label="Следующее фото">&rsaquo;</a></div><h3 style="margin-top:10px">Баня 3&times;4</h3><div class="small">Парная, моечная, комната отдыха &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="gallery"><a class="arw l" href="#" aria-label="Предыдущее фото">&lsaquo;</a><div class="ph gal">Фото бани 2</div><a class="arw r" href="#" aria-label="Следующее фото">&rsaquo;</a></div><h3 style="margin-top:10px">Баня 3&times;5</h3><div class="small">С тамбуром и окном в комнате отдыха &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div><div class="card"><div class="gallery"><a class="arw l" href="#" aria-label="Предыдущее фото">&lsaquo;</a><div class="ph gal">Фото бани 3</div><a class="arw r" href="#" aria-label="Следующее фото">&rsaquo;</a></div><h3 style="margin-top:10px">Баня 4&times;6</h3><div class="small">С крытой террасой под общей крышей &middot; срок <span class="stub">N дней</span></div><div class="price"><span class="stub">от N ₽</span></div></div></div>
   <p class="note">Блок доверия: показываем реально построенные бани. Подписи написал от себя. <b>Нужно от клиента:</b> фото бань и цены.</p>
 </section>
 <section>
@@ -406,6 +428,10 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
       Пн–Пт: с 8:00 до 17:00<br>Сб–Вс: с 8:00 до 15:00<br>
       <span style="color:#999">WhatsApp: +7 903 305-62-44</span>
     </div>
+  </div>
+  <div class="foot-bottom">
+    <span>Политика обработки персональных данных</span>
+    <span>Разработка сайта</span>
   </div>
 </footer>
 

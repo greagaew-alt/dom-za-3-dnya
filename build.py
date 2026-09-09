@@ -80,6 +80,17 @@ li{margin:4px 0}
 .ph.tall{min-height:260px}
 .ph.wide{min-height:190px}
 .ph.sq{min-height:120px}
+.ph.gal{min-height:300px}
+
+/* галерея-заглушка со стрелками листания */
+.gallery{position:relative}
+.arw{position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+  width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.75);
+  border:1px solid #dcdcdc;display:flex;align-items:center;justify-content:center;
+  font-size:17px;line-height:1;color:#8a8a8a;text-decoration:none;opacity:.45}
+.arw:hover{opacity:1;color:#333}
+.arw.l{left:9px}
+.arw.r{right:9px}
 
 /* сетки */
 .g{display:grid;gap:12px}
@@ -88,6 +99,9 @@ li{margin:4px 0}
 .g4{grid-template-columns:repeat(4,1fr)}
 .g5{grid-template-columns:repeat(5,1fr)}
 .split{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+.split-stretch{align-items:stretch}
+.split-stretch>div{min-width:0}
+.split-stretch .ph{height:100%}
 
 /* карточка */
 .card{background:#fff;border:1px solid #e0e0e0;border-radius:11px;padding:15px}
@@ -160,8 +174,12 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 .foot-in{max-width:1320px;margin:0 auto;padding:26px 20px;display:grid;
   grid-template-columns:1.5fr 1fr 1.4fr 1.2fr;gap:22px;font-size:13px;color:#666}
 .foot-in b{color:#111;display:block;margin:0 0 7px;font-size:13px}
-.foot-in a{text-decoration:none;display:inline}
+.foot-in a{text-decoration:none;display:block;margin:0 0 5px}
 .foot-in .social{margin-top:11px}
+.foot-in .social a{display:flex;margin:0}
+.foot-bottom{max-width:1320px;margin:0 auto;padding:13px 20px 4px;
+  border-top:1px solid #ececec;display:flex;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;font-size:12px;color:#999}
 
 /* комментарии (из скилла) */
 .cmt-btn{position:absolute;top:8px;right:10px;background:#fff;border:1px solid #ccc;
@@ -286,6 +304,8 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .ph{min-height:120px;padding:12px}
   .ph.tall{min-height:180px}
   .ph.wide{min-height:150px}
+  .ph.gal{min-height:190px}
+  .split-stretch .ph{height:auto;min-height:170px}
 
   /* формы и квиз */
   .form{max-width:none}
@@ -300,7 +320,9 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   .step{padding:13px 13px 13px 46px}
   .step::before{left:12px}
 
-  .foot-in{grid-template-columns:1fr;gap:16px}
+  .foot-in{grid-template-columns:1fr;gap:16px;text-align:center}
+  .foot-in .social{justify-content:center}
+  .foot-bottom{flex-direction:column;align-items:center;text-align:center;gap:6px}
   .cmt-fab{right:10px;bottom:10px;padding:10px 14px;font-size:12.5px}
   .cmt-btn{position:static;display:block;margin:12px 0 0;width:100%}
 }
@@ -609,6 +631,10 @@ def shell(title, body, crumb=""):
       <span style="color:#999">WhatsApp: +7 903 305-62-44</span>
     </div>
   </div>
+  <div class="foot-bottom">
+    <span>Политика обработки персональных данных</span>
+    <span>Разработка сайта</span>
+  </div>
 </footer>
 
 <script src="comments.js"></script>
@@ -724,8 +750,6 @@ def page_index():
     b.append(sec("Каталог домов", """
   <div id="doma"></div>
   <h2>Каталог домов</h2>
-  <p class="sub">Четыре типа домов, девять размеров, три комплектации.
-  У каждого проекта цена указана сразу.</p>
   %s
   <div class="btns">%s%s</div>""" % (
         grid(2, [
@@ -922,7 +946,7 @@ def page_index():
 
     # 11 ─ СВОЯ ПЛАНИРОВКА
     b.append(sec("Со своей планировкой", """
-  <div class="split">
+  <div class="split split-stretch">
     <div>
       <h2>Проект не нужен, достаточно вашего эскиза</h2>
       <p class="lead">Готовый проект не нужен. Покажите, каким вы хотите видеть
@@ -951,21 +975,33 @@ def page_index():
   <h2>Что говорят клиенты</h2>
   <div class="rating"><b>%s</b><span class="small">средняя оценка на основе
   %s отзывов в Яндекс Картах и 2ГИС</span></div>
-  %s
-  <div class="btns">%s%s</div>""" % (
+  %s""" % (
         S("4,9"), S("N"),
         grid(3, [
-            '<div class="card"><div class="small">%s</div>'
-            '<p style="margin-top:9px">%s</p><div class="small">%s</div></div>' % (
-                S("Имя, район"), S("текст отзыва — взять реальные из карт"),
-                S("Дом 6×6, сентябрь 2025"))
-            for _ in range(3)
-        ]),
-        btn("Читать отзывы в Яндекс Картах", ghost=True),
-        btn("Отзывы в 2ГИС", ghost=True)),
-        "Отзывов много, на сайте их нет. В стройке отзывы читают перед заявкой. "
-        "Берём тексты из карт и даём прямые ссылки на профили, чтобы клиент "
-        "проверил. <b>Нужно от клиента:</b> ссылки на Яндекс Карты и 2ГИС."))
+            '<div class="card"><div class="small"><b>%s</b></div>'
+            '<p style="margin-top:9px">%s</p><div class="small">%s</div></div>' % (n, t, m)
+            for n, t, m in [
+                ("Ирина",
+                 "Строили дом 6&times;6 на даче. Цену назвали сразу по телефону, "
+                 "по факту всё совпало с договором, доплат не было. Собрали "
+                 "за неделю, бригада аккуратная, за собой убрали.",
+                 "Дом 6&times;6, лето 2025"),
+                ("Алексей",
+                 "Обзвонил несколько компаний &mdash; везде «пришлите планировку, "
+                 "потом посчитаем». Здесь стоимость сказали в первом же разговоре. "
+                 "Построили дом 5&times;6 под ключ, заехали к осени.",
+                 "Дом 5&times;6, сентябрь 2025"),
+                ("Марат",
+                 "Ставили баню 3&times;4. По срокам не сдвинулись, по деньгам "
+                 "как договаривались. Пару мелочей по отделке поправили без "
+                 "вопросов уже после приёмки.",
+                 "Баня 3&times;4, весна 2025"),
+            ]
+        ])),
+        "Тексты отзывов написал в стиле реальных отзывов о каркасном "
+        "строительстве &mdash; клиент заменит на настоящие из карт. Кнопки "
+        "на профили в Яндекс Картах и 2ГИС добавим, когда будут ссылки. "
+        "<b>Нужно от клиента:</b> ссылки на профили и оценка/число отзывов."))
 
     # 13 ─ БАНИ
     b.append(sec("Бани", """
@@ -1031,31 +1067,21 @@ def page_index():
         "<b>Уточнить:</b> согласовать формулировку про гарантию (сейчас без срока)."))
 
     # 15 ─ ФИНАЛЬНЫЙ CTA
-    b.append(sec("Финальный призыв и контакты", """
-  <div class="split">
+    b.append(sec("Финальный призыв", """
+  <div class="split split-stretch">
     <div>
-      <h2>Постройте свой дом по понятной и фиксированной цене</h2>
+      <h2>Постройте свой дом<br>по понятной и фиксированной цене</h2>
       <p class="lead">Расскажите, какой дом вы хотите. Рассчитаем стоимость
       по вашим размерам и сразу скажем, сколько будет стоить строительство
       без долгих расчётов и скрытых доплат.</p>
       %s
-      <div style="margin-top:18px" class="small">
-        <b>Телефоны:</b> +7 (843) 203-82-82, +7 (843) 260-88-87,
-        +7 (903) 305-62-44<br>
-        <b>Офис:</b> г. Казань, ул. М. Миля, д. 59<br>
-        <b>Режим работы:</b> Пн–Пт с 8:00 до 17:00, Сб–Вс с 8:00 до 15:00<br>
-        <b>Почта:</b> andr0000@yandex.ru<br>
-        <b>Мессенджеры:</b> WhatsApp +7 903 305-62-44, Telegram, MAX
-      </div>
-      <div style="margin-top:12px">%s</div>
     </div>
     <div>%s</div>
   </div>""" % (
         form("", ["Ваше имя", "Телефон"], "Рассчитать стоимость"),
-        social(""),
-        ph("Карта: расположение офиса<br>+ зона выезда 100 км вокруг Казани", "wide")),
-        "Контакты взяты с подвала старого сайта. Форма для тех, кто дочитал, "
-        "но не прошёл квиз: два поля, остальное &mdash; в разговоре."))
+        ph("Фото: готовый дом компании,<br>общий план с участком", "wide")),
+        "Форма для тех, кто дочитал, но не прошёл квиз: два поля, остальное "
+        "&mdash; в разговоре. Контакты и карта &mdash; в подвале."))
 
     return shell("Прототип — Дом за 3 дня", "".join(b))
 
@@ -1225,10 +1251,14 @@ def page_bani():
   <h2>Реальные бани</h2>
   <p class="sub">Фотографии готовых объектов.</p>
   %s""" % grid(3, [
-        '<div class="card">%s<h3 style="margin-top:10px">Баня %s</h3>'
+        '<div class="card"><div class="gallery">'
+        '<a class="arw l" href="#" aria-label="Предыдущее фото">&lsaquo;</a>'
+        '%s'
+        '<a class="arw r" href="#" aria-label="Следующее фото">&rsaquo;</a>'
+        '</div><h3 style="margin-top:10px">Баня %s</h3>'
         '<div class="small">%s &middot; срок %s</div>'
-        '<div class="price">%s</div></div>' % (ph("Фото бани " + str(i), "sq"), sz, comp,
-                                               S("N дней"), S("от N ₽"))
+        '<div class="price">%s</div></div>' % (
+            ph("Фото бани " + str(i), "gal"), sz, comp, S("N дней"), S("от N ₽"))
         for i, (sz, comp) in enumerate([
             ("3&times;4", "Парная, моечная, комната отдыха"),
             ("3&times;5", "С тамбуром и окном в комнате отдыха"),
