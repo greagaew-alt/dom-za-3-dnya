@@ -96,7 +96,7 @@
   }
 
   function renderAll() {
-    var n = document.querySelectorAll('.cpin');
+    var n = document.querySelectorAll('.cpin:not(.cghost)');
     for (var i = 0; i < n.length; i++) n[i].remove();
     items.forEach(renderPin);
     listBtn.textContent = 'Комментарии (' + items.length + ')';
@@ -129,12 +129,13 @@
     // маркер места — чтобы было видно, к какой точке оставляешь комментарий
     var host = sections[loc.bi];
     if (host) {
-      var ghost = el('div', 'cghost');
+      var ghost = el('div', 'cpin cghost', '+');
       ghost.style.left = (loc.rx * 100) + '%';
       ghost.style.top = (loc.ry * 100) + '%';
       host.appendChild(ghost);
-      var narrow = innerWidth <= 640;
-      ghost.scrollIntoView({ behavior: 'smooth', block: narrow ? 'start' : 'center' });
+      // ставим точку в верхнюю треть экрана — форма и клавиатура снизу её не закроют
+      var gy = ghost.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(0, gy - innerHeight * 0.28), behavior: 'smooth' });
     }
 
     var f = el('div', 'cform');
@@ -301,10 +302,7 @@
     '.cpin.answered{background:#1f7a3d}',
     '.cpin.flash{animation:cflash 1.4s ease}',
     '@keyframes cflash{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.35)}40%{box-shadow:0 0 0 9px rgba(179,38,30,.35)}}',
-    '.cghost{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;',
-    'border-radius:50%;background:rgba(179,38,30,.85);border:3px solid #fff;z-index:44;',
-    'box-shadow:0 2px 10px rgba(0,0,0,.4);animation:cpulse 1.1s ease-in-out infinite;pointer-events:none}',
-    '@keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(179,38,30,.45)}50%{box-shadow:0 0 0 12px rgba(179,38,30,0)}}',
+    '.cghost{pointer-events:none;opacity:.92}',
     '.cform,.cthread{position:absolute;z-index:9998;background:#fff;border:1px solid #ccc;',
     'border-radius:12px;box-shadow:0 14px 44px rgba(0,0,0,.24);padding:13px;width:290px;',
     'font:14px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111}',
