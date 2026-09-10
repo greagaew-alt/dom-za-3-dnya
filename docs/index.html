@@ -267,6 +267,18 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   main{padding:14px 12px 78px}
   section{padding:42px 14px 16px;border-radius:12px}
   .sec-label{left:13px}
+
+  /* сравнительная таблица комплектаций -> карточки, без бокового скролла */
+  .tbl:has(.cmp){overflow:visible;border:0}
+  .cmp{border:0}
+  .cmp tr:first-child{display:none}
+  .cmp tr{display:block;border:1px solid #e0e0e0;border-radius:10px;
+    margin:0 0 8px;padding:9px 12px;background:#fff}
+  .cmp td{display:block;border:0;white-space:normal;padding:4px 0;font-size:13px}
+  .cmp td:first-child{font-weight:700;font-size:13.5px;padding:0 0 6px;
+    margin:0 0 6px;border-bottom:1px solid #eee}
+  .cmp td:not(:first-child)::before{content:attr(data-col) ": ";
+    color:#999;font-weight:600;font-size:11.5px}
   h1{font-size:25px;line-height:1.18}
   h2{font-size:20px}
   h3{font-size:15px}
@@ -419,7 +431,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   Отличие комплектаций в утеплении, отделке и уровне комфорта.</p>
   <div class="g g3"><div class="card"><h3>Оптимальная</h3><div class="small">Для летнего отдыха и выходных на даче.<br><br>Стены, пол и потолок утеплены на 100 мм. Снаружи вагонка, кровля из оцинкованного профнастила.</div><div class="price">от 590&nbsp;000&nbsp;&#8381;<small>дом 4×4 одноэтажный</small></div></div><div class="card"><h3>Стандарт</h3><div class="small">Для сезонного проживания. Теплее и потолки выше.<br><br>Пол и потолок утеплены на 150 мм, кровля &mdash; окрашенный профнастил, перегородок сколько нужно.</div><div class="price">от 639&nbsp;000&nbsp;&#8381;<small>дом 4×4 одноэтажный</small></div></div><div class="card"><h3>Зимняя дача</h3><div class="small">Тёплый дом, в котором можно жить зимой.<br><br>Стойки каркаса 40&times;150 мм, стены утеплены на 150 мм, пол и потолок &mdash; на 200 мм. Снаружи имитация бруса.</div><div class="price">от 678&nbsp;000&nbsp;&#8381;<small>дом 4×4 одноэтажный</small></div></div></div>
   <h3 style="margin:22px 0 8px">Чем именно отличаются</h3>
-  <div class="tbl"><table><tr><th>Параметр</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td>Стойки каркаса</td><td>50&times;100 мм</td><td>50&times;100 мм</td><td>40&times;150 мм</td></tr><tr><td>Утепление стен</td><td>100 мм</td><td>100 мм</td><td>150 мм</td></tr><tr><td>Наружная отделка</td><td>вагонка 90&times;14 мм</td><td>вагонка 90&times;14 мм</td><td>имитация бруса 16&times;135 мм</td></tr><tr><td>Утепление пола</td><td>100 мм</td><td>150 мм</td><td>200 мм</td></tr><tr><td>Утепление потолка</td><td>100 мм</td><td>150 мм</td><td>200 мм</td></tr><tr><td>Высота потолка 1 этажа</td><td>от 2300 мм</td><td>от 2450 мм</td><td>от 2450 мм</td></tr><tr><td>Высота потолка 2 этажа</td><td>от 2150 мм</td><td>от 2300 мм</td><td>от 2300 мм</td></tr><tr><td>Перегородки</td><td>одна по короткой стороне</td><td>сколько нужно</td><td>сколько нужно</td></tr><tr><td>Кровля</td><td>профнастил оцинкованный</td><td>профнастил окрашенный</td><td>профнастил окрашенный</td></tr></table></div>
+  <div class="tbl"><table class="cmp"><tr><th>Параметр</th><th>Оптимальная</th><th>Стандарт</th><th>Зимняя дача</th></tr><tr><td data-col="Параметр">Стойки каркаса</td><td data-col="Оптимальная">50&times;100 мм</td><td data-col="Стандарт">50&times;100 мм</td><td data-col="Зимняя дача">40&times;150 мм</td></tr><tr><td data-col="Параметр">Утепление стен</td><td data-col="Оптимальная">100 мм</td><td data-col="Стандарт">100 мм</td><td data-col="Зимняя дача">150 мм</td></tr><tr><td data-col="Параметр">Наружная отделка</td><td data-col="Оптимальная">вагонка 90&times;14 мм</td><td data-col="Стандарт">вагонка 90&times;14 мм</td><td data-col="Зимняя дача">имитация бруса 16&times;135 мм</td></tr><tr><td data-col="Параметр">Утепление пола</td><td data-col="Оптимальная">100 мм</td><td data-col="Стандарт">150 мм</td><td data-col="Зимняя дача">200 мм</td></tr><tr><td data-col="Параметр">Утепление потолка</td><td data-col="Оптимальная">100 мм</td><td data-col="Стандарт">150 мм</td><td data-col="Зимняя дача">200 мм</td></tr><tr><td data-col="Параметр">Высота потолка 1 этажа</td><td data-col="Оптимальная">от 2300 мм</td><td data-col="Стандарт">от 2450 мм</td><td data-col="Зимняя дача">от 2450 мм</td></tr><tr><td data-col="Параметр">Высота потолка 2 этажа</td><td data-col="Оптимальная">от 2150 мм</td><td data-col="Стандарт">от 2300 мм</td><td data-col="Зимняя дача">от 2300 мм</td></tr><tr><td data-col="Параметр">Перегородки</td><td data-col="Оптимальная">одна по короткой стороне</td><td data-col="Стандарт">сколько нужно</td><td data-col="Зимняя дача">сколько нужно</td></tr><tr><td data-col="Параметр">Кровля</td><td data-col="Оптимальная">профнастил оцинкованный</td><td data-col="Стандарт">профнастил окрашенный</td><td data-col="Зимняя дача">профнастил окрашенный</td></tr></table></div>
 </section>
 <section>
   <div class="sec-label">6 &middot; ПОЧЕМУ ТАКАЯ ЦЕНА</div>
@@ -434,7 +446,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   <div class="sec-label">7 &middot; СРОКИ СТРОИТЕЛЬСТВА</div>
 
   <h2>За сколько построим дом</h2>
-  <div class="tbl"><table><tr><th>Размер дома</th><th>Площадь</th><th>Срок строительства</th></tr><tr><td>3&times;4, 4&times;4</td><td>12&ndash;16 м&sup2;</td><td><b>3 дня</b></td></tr><tr><td>4&times;6, 5&times;6</td><td>24&ndash;30 м&sup2;</td><td><span class="stub">N дней</span></td></tr><tr><td>6&times;6, 6&times;8</td><td>36&ndash;48 м&sup2;</td><td><span class="stub">N дней</span></td></tr><tr><td>6&times;6 и больше с мансардой</td><td>от 54 м&sup2;</td><td><span class="stub">15–20 дней</span></td></tr></table></div>
+  <div class="tbl"><table><tr><th>Размер дома</th><th>Площадь</th><th>Срок строительства</th></tr><tr><td data-col="Размер дома">3&times;4, 4&times;4</td><td data-col="Площадь">12&ndash;16 м&sup2;</td><td data-col="Срок строительства"><b>3 дня</b></td></tr><tr><td data-col="Размер дома">4&times;6, 5&times;6</td><td data-col="Площадь">24&ndash;30 м&sup2;</td><td data-col="Срок строительства"><span class="stub">N дней</span></td></tr><tr><td data-col="Размер дома">6&times;6, 6&times;8</td><td data-col="Площадь">36&ndash;48 м&sup2;</td><td data-col="Срок строительства"><span class="stub">N дней</span></td></tr><tr><td data-col="Размер дома">6&times;6 и больше с мансардой</td><td data-col="Площадь">от 54 м&sup2;</td><td data-col="Срок строительства"><span class="stub">15–20 дней</span></td></tr></table></div>
   <p class="small" style="margin-top:12px">Срок считается с момента завоза
   материалов на участок. Свайный фундамент входит в комплектацию и делается
   в эти же сроки.</p>

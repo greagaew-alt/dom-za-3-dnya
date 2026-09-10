@@ -267,6 +267,18 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   main{padding:14px 12px 78px}
   section{padding:42px 14px 16px;border-radius:12px}
   .sec-label{left:13px}
+
+  /* сравнительная таблица комплектаций -> карточки, без бокового скролла */
+  .tbl:has(.cmp){overflow:visible;border:0}
+  .cmp{border:0}
+  .cmp tr:first-child{display:none}
+  .cmp tr{display:block;border:1px solid #e0e0e0;border-radius:10px;
+    margin:0 0 8px;padding:9px 12px;background:#fff}
+  .cmp td{display:block;border:0;white-space:normal;padding:4px 0;font-size:13px}
+  .cmp td:first-child{font-weight:700;font-size:13.5px;padding:0 0 6px;
+    margin:0 0 6px;border-bottom:1px solid #eee}
+  .cmp td:not(:first-child)::before{content:attr(data-col) ": ";
+    color:#999;font-weight:600;font-size:11.5px}
   h1{font-size:25px;line-height:1.18}
   h2{font-size:20px}
   h3{font-size:15px}
@@ -381,7 +393,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 
   <h2>Сколько стоит в разных комплектациях</h2>
   <p class="sub">Одна и та же коробка, разное утепление и отделка.</p>
-  <div class="tbl"><table><tr><th>Комплектация</th><th>Для чего</th><th>Стены</th><th>Пол и потолок</th><th>Цена</th></tr><tr><td>Оптимальная</td><td>Лето, выходные на даче</td><td>100 мм</td><td>100 мм</td><td>969&nbsp;000&nbsp;&#8381;</td></tr><tr><td>Стандарт</td><td>Сезонное проживание</td><td>100 мм</td><td>150 мм</td><td>1&nbsp;048&nbsp;000&nbsp;&#8381;</td></tr><tr><td>Зимняя дача</td><td>Круглый год, морозы</td><td>150 мм</td><td>200 мм</td><td>1&nbsp;114&nbsp;000&nbsp;&#8381;</td></tr></table></div>
+  <div class="tbl"><table><tr><th>Комплектация</th><th>Для чего</th><th>Стены</th><th>Пол и потолок</th><th>Цена</th></tr><tr><td data-col="Комплектация">Оптимальная</td><td data-col="Для чего">Лето, выходные на даче</td><td data-col="Стены">100 мм</td><td data-col="Пол и потолок">100 мм</td><td data-col="Цена">969&nbsp;000&nbsp;&#8381;</td></tr><tr><td data-col="Комплектация">Стандарт</td><td data-col="Для чего">Сезонное проживание</td><td data-col="Стены">100 мм</td><td data-col="Пол и потолок">150 мм</td><td data-col="Цена">1&nbsp;048&nbsp;000&nbsp;&#8381;</td></tr><tr><td data-col="Комплектация">Зимняя дача</td><td data-col="Для чего">Круглый год, морозы</td><td data-col="Стены">150 мм</td><td data-col="Пол и потолок">200 мм</td><td data-col="Цена">1&nbsp;114&nbsp;000&nbsp;&#8381;</td></tr></table></div>
   <p class="small" style="margin-top:11px">Отдельно считаются: <span class="stub">доставка, терраса, септик, электрика</span></p>
 </section>
 <section>

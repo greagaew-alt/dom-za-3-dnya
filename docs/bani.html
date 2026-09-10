@@ -267,6 +267,18 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   main{padding:14px 12px 78px}
   section{padding:42px 14px 16px;border-radius:12px}
   .sec-label{left:13px}
+
+  /* сравнительная таблица комплектаций -> карточки, без бокового скролла */
+  .tbl:has(.cmp){overflow:visible;border:0}
+  .cmp{border:0}
+  .cmp tr:first-child{display:none}
+  .cmp tr{display:block;border:1px solid #e0e0e0;border-radius:10px;
+    margin:0 0 8px;padding:9px 12px;background:#fff}
+  .cmp td{display:block;border:0;white-space:normal;padding:4px 0;font-size:13px}
+  .cmp td:first-child{font-weight:700;font-size:13.5px;padding:0 0 6px;
+    margin:0 0 6px;border-bottom:1px solid #eee}
+  .cmp td:not(:first-child)::before{content:attr(data-col) ": ";
+    color:#999;font-weight:600;font-size:11.5px}
   h1{font-size:25px;line-height:1.18}
   h2{font-size:20px}
   h3{font-size:15px}
@@ -360,7 +372,7 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
 
   <h2>Размеры и цены</h2>
   <p class="sub">Сравнение размеров, состава, сроков и стоимости.</p>
-  <div class="tbl"><table><tr><th>Размер</th><th>Состав</th><th>Срок</th><th>Цена</th></tr><tr><td>3&times;4</td><td>Парная, моечная и комната отдыха</td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr><tr><td>3&times;5</td><td>Парная, моечная, комната отдыха с окном и небольшой тамбур</td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr><tr><td>4&times;6</td><td>Парная, моечная, просторная комната отдыха и крытая терраса</td><td><span class="stub">N дней</span></td><td><span class="stub">от N ₽</span></td></tr></table></div>
+  <div class="tbl"><table><tr><th>Размер</th><th>Состав</th><th>Срок</th><th>Цена</th></tr><tr><td data-col="Размер">3&times;4</td><td data-col="Состав">Парная, моечная и комната отдыха</td><td data-col="Срок"><span class="stub">N дней</span></td><td data-col="Цена"><span class="stub">от N ₽</span></td></tr><tr><td data-col="Размер">3&times;5</td><td data-col="Состав">Парная, моечная, комната отдыха с окном и небольшой тамбур</td><td data-col="Срок"><span class="stub">N дней</span></td><td data-col="Цена"><span class="stub">от N ₽</span></td></tr><tr><td data-col="Размер">4&times;6</td><td data-col="Состав">Парная, моечная, просторная комната отдыха и крытая терраса</td><td data-col="Срок"><span class="stub">N дней</span></td><td data-col="Цена"><span class="stub">от N ₽</span></td></tr></table></div>
 </section>
 <section>
   <div class="sec-label">3 &middot; ЧТО ВХОДИТ В СТОИМОСТЬ</div>

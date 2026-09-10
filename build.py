@@ -318,6 +318,18 @@ footer{border-top:1px solid #e5e5e5;background:#fafafa}
   main{padding:14px 12px 78px}
   section{padding:42px 14px 16px;border-radius:12px}
   .sec-label{left:13px}
+
+  /* сравнительная таблица комплектаций -> карточки, без бокового скролла */
+  .tbl:has(.cmp){overflow:visible;border:0}
+  .cmp{border:0}
+  .cmp tr:first-child{display:none}
+  .cmp tr{display:block;border:1px solid #e0e0e0;border-radius:10px;
+    margin:0 0 8px;padding:9px 12px;background:#fff}
+  .cmp td{display:block;border:0;white-space:normal;padding:4px 0;font-size:13px}
+  .cmp td:first-child{font-weight:700;font-size:13.5px;padding:0 0 6px;
+    margin:0 0 6px;border-bottom:1px solid #eee}
+  .cmp td:not(:first-child)::before{content:attr(data-col) ": ";
+    color:#999;font-weight:600;font-size:11.5px}
   h1{font-size:25px;line-height:1.18}
   h2{font-size:20px}
   h3{font-size:15px}
@@ -437,10 +449,18 @@ def steps(items):
         for t, b in items)
 
 
-def table(headers, rows):
+def table(headers, rows, cls=""):
     h = "".join('<th>%s</th>' % x for x in headers)
-    r = "".join('<tr>%s</tr>' % "".join('<td>%s</td>' % c for c in row) for row in rows)
-    return '<div class="tbl"><table><tr>%s</tr>%s</table></div>' % (h, r)
+    r = ""
+    for row in rows:
+        cells = "".join(
+            '<td data-col="%s">%s</td>' % (
+                re.sub(r"<[^>]+>|&\w+;", "", str(headers[i])) if i < len(headers) else "",
+                c)
+            for i, c in enumerate(row))
+        r += "<tr>%s</tr>" % cells
+    c = ' class="%s"' % cls if cls else ""
+    return '<div class="tbl"><table%s><tr>%s</tr>%s</table></div>' % (c, h, r)
 
 
 def form(title, fields, button, consent=True):
@@ -856,7 +876,7 @@ def page_index():
                  '<small>дом 4×4 одноэтажный</small></div>'),
         ]),
         table(["Параметр", "Оптимальная", "Стандарт", "Зимняя дача"],
-              [[a, b, c, d] for a, b, c, d in KOMPL])),
+              [[a, b, c, d] for a, b, c, d in KOMPL], cls="cmp")),
         "Состав взят с реальных сканов прайса на старом сайте &mdash; там он лежит "
         "картинками, я его расшифровал. Сравнительная таблица работает лучше трёх "
         "отдельных списков: разница видна за секунду, и человек обычно берёт средний "
