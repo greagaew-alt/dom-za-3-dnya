@@ -34,38 +34,6 @@
   }
   function lsDelete(id) { lsSet(lsGet().filter(function (c) { return c.id !== id; })); }
 
-  // экспорт/импорт всех страниц — чтобы клиент передал комментарии Глебу
-  function exportAll() {
-    var out = {};
-    try {
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (k && k.indexOf('proto-cmt-') === 0) {
-          out[k.slice(10)] = JSON.parse(localStorage.getItem(k) || '[]');
-        }
-      }
-    } catch (e) { }
-    return JSON.stringify(out);
-  }
-  function importAll(str) {
-    var data;
-    try { data = JSON.parse(str); } catch (e) { return -1; }
-    if (!data || typeof data !== 'object') return -1;
-    var n = 0;
-    for (var page in data) {
-      if (!Object.prototype.hasOwnProperty.call(data, page)) continue;
-      var key = 'proto-cmt-' + page;
-      var cur = [];
-      try { cur = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { }
-      var seen = {};
-      cur.forEach(function (c) { seen[c.id] = 1; });
-      (data[page] || []).forEach(function (c) {
-        if (c && c.id && !seen[c.id]) { cur.push(c); seen[c.id] = 1; n++; }
-      });
-      try { localStorage.setItem(key, JSON.stringify(cur)); } catch (e) { }
-    }
-    return n;
-  }
   function lsReplyDelete(id, ri) {
     var a = lsGet();
     for (var i = 0; i < a.length; i++) {
@@ -225,37 +193,9 @@
         '<span class="cwho">' + esc(c.block || '') + ' · ' + fmt(c.ts) + ((c.replies || []).length ? ' · ответов: ' + c.replies.length : '') + '</span></span>' +
         '<span class="cldel" title="Удалить">&times;</span></div>';
     });
-    h += '<div class="cxfer">'
-      + '<button class="cxbtn" type="button" data-a="copy">Скопировать всё</button>'
-      + '<button class="cxbtn ghost" type="button" data-a="paste">Вставить</button>'
-      + '</div>'
-      + '<div class="cxarea" hidden><textarea placeholder="Вставьте сюда текст, который прислал клиент"></textarea>'
-      + '<button class="cxbtn" type="button" data-a="load">Загрузить</button></div>';
     p.innerHTML = h;
     document.body.appendChild(p);
     p.querySelector('.cx').onclick = function () { p.remove(); };
-
-    var area = p.querySelector('.cxarea');
-    p.querySelector('[data-a="copy"]').onclick = function () {
-      var txt = exportAll(), btn = this;
-      var done = function () { btn.textContent = 'Скопировано ✓'; setTimeout(function () { btn.textContent = 'Скопировать всё'; }, 2000); };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(done, function () { showArea(txt); });
-      } else { showArea(txt); }
-    };
-    p.querySelector('[data-a="paste"]').onclick = function () { area.hidden = false; area.querySelector('textarea').value = ''; area.querySelector('textarea').focus(); };
-    p.querySelector('[data-a="load"]').onclick = function () {
-      var n = importAll(area.querySelector('textarea').value.trim());
-      if (n < 0) { alert('Не получилось разобрать текст. Проверьте, что скопировали целиком.'); return; }
-      alert('Загружено новых комментариев: ' + n);
-      area.hidden = true; p.remove(); reload();
-    };
-    function showArea(txt) {
-      area.hidden = false;
-      var ta = area.querySelector('textarea');
-      ta.value = txt; ta.readOnly = true; ta.select();
-      area.querySelector('[data-a="load"]').hidden = true;
-    }
 
     var rows = p.querySelectorAll('.clrow');
     for (var i = 0; i < rows.length; i++) {
@@ -367,17 +307,11 @@
     '.cldel{cursor:pointer;color:#b3261e;font-size:16px;line-height:1;padding:0 2px;flex:none}',
     '.cldel:hover{color:#7a1a15}',
     '.cempty{color:#999;font-size:13px;text-align:center;padding:14px 0}',
-    '.cxfer{display:flex;gap:8px;margin:12px 0 0;border-top:1px solid #eee;padding-top:12px}',
-    '.cxbtn{flex:1;background:#111;color:#fff;border:0;border-radius:8px;padding:9px;font:600 12.5px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;cursor:pointer}',
-    '.cxbtn.ghost{background:#fff;color:#111;border:1px solid #ccc}',
-    '.cxarea{margin:8px 0 0}',
-    '.cxarea textarea{width:100%;min-height:70px;border:1px solid #d5d5d5;border-radius:8px;padding:8px;font:inherit;font-size:12px;box-sizing:border-box;resize:vertical}',
-    '.cxarea .cxbtn{width:100%;flex:none;margin-top:6px}',
     '@media(max-width:640px){',
     '.cform,.cthread{position:fixed;left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto}',
     '.clist{left:8px;right:8px;width:auto;bottom:116px}',
     '.cfab{right:8px;bottom:8px}.clistbtn{right:8px;bottom:58px}',
-    '.cform textarea,.cthread textarea,.cxarea textarea{font-size:16px}}'
+    '.cform textarea,.cthread textarea{font-size:16px}}'
   ].join('');
   document.head.appendChild(css);
 })();
