@@ -104,7 +104,7 @@
   }
 
   function closePopovers() {
-    var n = document.querySelectorAll('.cthread,.cform,.clist');
+    var n = document.querySelectorAll('.cthread,.cform,.clist,.cghost');
     for (var i = 0; i < n.length; i++) n[i].remove();
   }
 
@@ -116,9 +116,27 @@
     if (r.top < pad) pop.style.top = (scrollY + pad) + 'px';
   }
 
+  function removeGhost() {
+    var g = document.querySelector('.cghost');
+    if (g) g.remove();
+  }
+
   function openForm(cx, cy, px, py) {
     closePopovers();
+    removeGhost();
     var loc = locate(cx, cy);
+
+    // маркер места — чтобы было видно, к какой точке оставляешь комментарий
+    var host = sections[loc.bi];
+    if (host) {
+      var ghost = el('div', 'cghost');
+      ghost.style.left = (loc.rx * 100) + '%';
+      ghost.style.top = (loc.ry * 100) + '%';
+      host.appendChild(ghost);
+      var narrow = innerWidth <= 640;
+      ghost.scrollIntoView({ behavior: 'smooth', block: narrow ? 'start' : 'center' });
+    }
+
     var f = el('div', 'cform');
     f.innerHTML =
       '<div class="cthead"><b>Новый комментарий</b><span class="cx">&times;</span></div>' +
@@ -129,18 +147,20 @@
     f.style.top = py + 'px';
     document.body.appendChild(f);
     clamp(f);
-    var ta = f.querySelector('textarea'); ta.focus();
-    f.querySelector('.cx').onclick = function () { f.remove(); setPlacing(false); };
+    var ta = f.querySelector('textarea');
+    if (innerWidth > 640) ta.focus();
+    f.querySelector('.cx').onclick = function () { f.remove(); removeGhost(); setPlacing(false); };
     f.querySelector('.csend').onclick = function () {
       var t = ta.value.trim();
       if (!t) { ta.focus(); return; }
       var btn = f.querySelector('.csend'); btn.disabled = true; btn.textContent = '…';
+      var fin = function () { f.remove(); removeGhost(); setPlacing(false); };
       var rec = { action: 'add', page: PAGE, bi: loc.bi, block: loc.block, rx: loc.rx, ry: loc.ry, text: t };
       api('POST', rec)
-        .then(reload).then(function () { f.remove(); setPlacing(false); })
+        .then(reload).then(fin)
         .catch(function () {
           lsAdd({ page: PAGE, bi: loc.bi, block: loc.block, rx: loc.rx, ry: loc.ry, text: t, author: 'client', ts: Date.now() });
-          reload().then(function () { f.remove(); setPlacing(false); });
+          reload().then(fin);
         });
     };
   }
@@ -271,9 +291,9 @@
   css.textContent = [
     '.cfab,.clistbtn{position:fixed;right:14px;z-index:9999;border:0;border-radius:999px;',
     'font:600 13.5px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;cursor:pointer}',
-    '.cfab{bottom:14px;background:#111;color:#fff;padding:12px 17px;box-shadow:0 6px 22px rgba(0,0,0,.28)}',
+    '.cfab{bottom:14px;background:#111;color:#fff;padding:18px 22px;box-shadow:0 6px 22px rgba(0,0,0,.28)}',
     '.cfab.on{background:#b3261e}',
-    '.clistbtn{bottom:64px;background:#fff;color:#333;border:1px solid #ddd;padding:9px 14px;box-shadow:0 4px 16px rgba(0,0,0,.16)}',
+    '.clistbtn{bottom:74px;background:#fff;color:#333;border:1px solid #ddd;padding:14px 18px;box-shadow:0 4px 16px rgba(0,0,0,.16)}',
     'body.cplacing,body.cplacing *{cursor:crosshair!important}',
     '.cpin{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;',
     'border-radius:50% 50% 50% 3px;background:#b3261e;color:#fff;border:2px solid #fff;',
@@ -281,10 +301,14 @@
     '.cpin.answered{background:#1f7a3d}',
     '.cpin.flash{animation:cflash 1.4s ease}',
     '@keyframes cflash{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.35)}40%{box-shadow:0 0 0 9px rgba(179,38,30,.35)}}',
+    '.cghost{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;',
+    'border-radius:50%;background:rgba(179,38,30,.85);border:3px solid #fff;z-index:44;',
+    'box-shadow:0 2px 10px rgba(0,0,0,.4);animation:cpulse 1.1s ease-in-out infinite;pointer-events:none}',
+    '@keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(179,38,30,.45)}50%{box-shadow:0 0 0 12px rgba(179,38,30,0)}}',
     '.cform,.cthread{position:absolute;z-index:9998;background:#fff;border:1px solid #ccc;',
     'border-radius:12px;box-shadow:0 14px 44px rgba(0,0,0,.24);padding:13px;width:290px;',
     'font:14px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111}',
-    '.clist{position:fixed;right:14px;bottom:110px;z-index:9998;background:#fff;border:1px solid #ccc;',
+    '.clist{position:fixed;right:14px;bottom:132px;z-index:9998;background:#fff;border:1px solid #ccc;',
     'border-radius:12px;box-shadow:0 14px 44px rgba(0,0,0,.24);padding:13px;width:330px;max-height:62vh;overflow:auto;',
     'font:14px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111}',
     '.cthead{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;font-size:13px}',
@@ -299,7 +323,7 @@
     '.cform textarea,.cthread textarea{width:100%;min-height:62px;border:1px solid #d5d5d5;',
     'border-radius:8px;padding:8px;font:inherit;font-size:13.5px;resize:vertical;box-sizing:border-box}',
     '.csend{margin-top:8px;width:100%;background:#111;color:#fff;border:0;border-radius:8px;',
-    'padding:9px;font:600 13px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;cursor:pointer}',
+    'padding:14px;font:600 13.5px/1 -apple-system,Segoe UI,Roboto,Arial,sans-serif;cursor:pointer}',
     '.csend:disabled{opacity:.6}',
     '.clrow{padding:9px 4px;border-top:1px solid #eee;font-size:13px;display:flex;gap:8px;align-items:flex-start}',
     '.clrow:first-of-type{border-top:0}.clrow:hover{background:#f6f6f6}',
@@ -309,8 +333,8 @@
     '.cempty{color:#999;font-size:13px;text-align:center;padding:14px 0}',
     '@media(max-width:640px){',
     '.cform,.cthread{position:fixed;left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto}',
-    '.clist{left:8px;right:8px;width:auto;bottom:116px}',
-    '.cfab{right:8px;bottom:8px}.clistbtn{right:8px;bottom:58px}',
+    '.clist{left:8px;right:8px;width:auto;bottom:132px}',
+    '.cfab{right:8px;bottom:8px}.clistbtn{right:8px;bottom:70px}',
     '.cform textarea,.cthread textarea{font-size:16px}}'
   ].join('');
   document.head.appendChild(css);
