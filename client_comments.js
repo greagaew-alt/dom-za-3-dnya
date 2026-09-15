@@ -33,11 +33,6 @@
     lsSet(a);
   }
   function lsDelete(id) { lsSet(lsGet().filter(function (c) { return c.id !== id; })); }
-  function lsResolve(id, val) {
-    var a = lsGet();
-    for (var i = 0; i < a.length; i++) { if (a[i].id === id) a[i].resolved = val; }
-    lsSet(a);
-  }
 
   function lsReplyDelete(id, ri) {
     var a = lsGet();
@@ -58,11 +53,6 @@
     if (id.charAt(0) === 'L') { lsReplyDelete(id, ri); return reload(); }
     return api('POST', { action: 'reply_delete', id: id, ri: ri })
       .then(reload).catch(function () { lsReplyDelete(id, ri); return reload(); });
-  }
-  function toggleResolve(id, val) {
-    if (id.charAt(0) === 'L') { lsResolve(id, val); return reload(); }
-    return api('POST', { action: 'resolve', id: id, resolved: val })
-      .then(reload).catch(function () { lsResolve(id, val); return reload(); });
   }
   function el(t, c, h) { var e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (m) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]; }); }
@@ -95,13 +85,12 @@
   function renderPin(c, idx) {
     var host = sections[c.bi];
     if (!host) return;
-    var pin = el('button', 'cpin', c.resolved ? '&#10003;' : String(idx + 1));
+    var pin = el('button', 'cpin', String(idx + 1));
     pin.type = 'button';
     pin.style.left = (c.rx * 100) + '%';
     pin.style.top = (c.ry * 100) + '%';
     pin.dataset.id = c.id;
-    if (c.resolved) pin.classList.add('done');
-    else if ((c.replies || []).length) pin.classList.add('answered');
+    if ((c.replies || []).length) pin.classList.add('answered');
     pin.onclick = function (ev) { ev.stopPropagation(); openThread(c, pin); };
     host.appendChild(pin);
   }
@@ -180,9 +169,8 @@
   function openThread(c, anchorEl) {
     closePopovers();
     var pop = el('div', 'cthread');
-    var h = '<div class="cthead"><b>Комментарий' + (c.resolved ? ' <span class="cdonetag">выполнено</span>' : '') + '</b>'
-      + '<span class="cactions"><span class="cres">' + (c.resolved ? 'Снять отметку' : 'Выполнено') + '</span>'
-      + '<span class="cdel" title="Удалить весь комментарий">Удалить</span>'
+    var h = '<div class="cthead"><b>Комментарий</b>'
+      + '<span class="cactions"><span class="cdel" title="Удалить весь комментарий">Удалить</span>'
       + '<span class="cx">&times;</span></span></div>';
     h += '<div class="cmsg"><span class="cwho">Клиент · ' + fmt(c.ts) + '</span><p>' + esc(c.text) + '</p></div>';
     (c.replies || []).forEach(function (r, ri) {
@@ -198,9 +186,6 @@
     document.body.appendChild(pop);
     clamp(pop);
     pop.querySelector('.cx').onclick = closePopovers;
-    pop.querySelector('.cres').onclick = function () {
-      toggleResolve(c.id, !c.resolved).then(closePopovers);
-    };
     pop.querySelector('.cdel').onclick = function () {
       if (confirm('Удалить этот комментарий?')) removeComment(c.id).then(closePopovers);
     };
@@ -225,9 +210,7 @@
     var h = '<div class="cthead"><b>Комментарии</b><span class="cx">&times;</span></div>';
     if (!items.length) h += '<p class="cempty">Пока пусто</p>';
     items.forEach(function (c, i) {
-      h += '<div class="clrow' + (c.resolved ? ' done' : '') + '" data-id="' + c.id + '"><span class="cltxt">'
-        + (c.resolved ? '<span class="cldone">&#10003;</span> ' : '<b>' + (i + 1) + '.</b> ')
-        + esc(c.text.slice(0, 90)) +
+      h += '<div class="clrow" data-id="' + c.id + '"><span class="cltxt"><b>' + (i + 1) + '.</b> ' + esc(c.text.slice(0, 90)) +
         '<span class="cwho">' + esc(c.block || '') + ' · ' + fmt(c.ts) + ((c.replies || []).length ? ' · ответов: ' + c.replies.length : '') + '</span></span>' +
         '<span class="cldel" title="Удалить">&times;</span></div>';
     });
@@ -316,7 +299,7 @@
     '.cpin{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;',
     'border-radius:50% 50% 50% 3px;background:#b3261e;color:#fff;border:2px solid #fff;',
     'font:700 12px/1 sans-serif;cursor:pointer;z-index:45;box-shadow:0 2px 8px rgba(0,0,0,.35)}',
-    '.cpin.answered,.cpin.done{background:#1f7a3d}',
+    '.cpin.answered{background:#1f7a3d}',
     '.cpin.flash{animation:cflash 1.4s ease}',
     '@keyframes cflash{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.35)}40%{box-shadow:0 0 0 9px rgba(179,38,30,.35)}}',
     '.cghost{pointer-events:none;opacity:.92}',
@@ -330,10 +313,6 @@
     '.cactions{display:flex;align-items:center;gap:10px}',
     '.cx{cursor:pointer;color:#999;font-size:18px;line-height:1;padding:0 2px}.cx:hover{color:#111}',
     '.cdel{cursor:pointer;color:#b3261e;font-size:11.5px;font-weight:600}.cdel:hover{text-decoration:underline}',
-    '.cres{cursor:pointer;color:#1f7a3d;font-size:11.5px;font-weight:600}.cres:hover{text-decoration:underline}',
-    '.cdonetag{color:#1f7a3d;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}',
-    '.clrow.done{opacity:.6}',
-    '.cldone{color:#1f7a3d;font-weight:700}',
     '.cwho{display:block;font-size:11px;color:#999;margin:0 0 4px}',
     '.cmsg{background:#f5f5f5;border-radius:8px;padding:8px 10px;margin:0 0 7px}',
     '.cmsg.reply{background:#eef3ff}.cmsg p{margin:0;font-size:13.5px}',

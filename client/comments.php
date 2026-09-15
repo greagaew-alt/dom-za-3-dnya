@@ -72,16 +72,6 @@ if ($action === 'reply_delete') {
     exit;
 }
 
-if ($action === 'resolve') {
-    $id = g($in, 'id', '');
-    $val = g($in, 'resolved', true) ? true : false;
-    foreach ($data as $i => $c) {
-        if (g($c, 'id', '') === $id) { $data[$i]['resolved'] = $val; }
-    }
-    echo storec($FILE, $data) ? '{"ok":true}' : '{"error":"save failed"}';
-    exit;
-}
-
 $txt = clip(g($in, 'text', ''), 2000);
 if ($txt === '') { http_response_code(400); echo '{"error":"empty text"}'; exit; }
 
